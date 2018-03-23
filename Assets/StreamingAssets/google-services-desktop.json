@@ -1,0 +1,37 @@
+{
+  "client": [
+    {
+      "services": {
+        "appinvite_service": {
+          "status": 0
+        }, 
+        "analytics_service": {
+          "status": 0
+        }
+      }, 
+      "oauth_client": [
+        {
+          "client_id": "984886558255-gmf1fn4orrcrfdjarutvu9d7jftcli7j.apps.googleusercontent.com"
+        }
+      ], 
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSMsJa23QOgcrf0V--cDEdVy1j_E89V0Q"
+        }
+      ], 
+      "client_info": {
+        "mobilesdk_app_id": "1:984886558255:ios:e2fa2dfd9dbc0bed", 
+        "android_client_info": {
+          "package_name": "com.unity.arkitscene45w45sehss"
+        }
+      }
+    }
+  ], 
+  "configuration_version": "1", 
+  "project_info": {
+    "storage_bucket": "newp-f426c.appspot.com", 
+    "project_id": "newp-f426c", 
+    "firebase_url": "https://newp-f426c.firebaseio.com", 
+    "project_number": "984886558255"
+  }
+}

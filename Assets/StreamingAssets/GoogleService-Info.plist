@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AD_UNIT_ID_FOR_BANNER_TEST</key>
+	<string>ca-app-pub-3940256099942544/2934735716</string>
+	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
+	<string>ca-app-pub-3940256099942544/4411468910</string>
+	<key>CLIENT_ID</key>
+	<string>984886558255-gmf1fn4orrcrfdjarutvu9d7jftcli7j.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.984886558255-gmf1fn4orrcrfdjarutvu9d7jftcli7j</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCSMsJa23QOgcrf0V--cDEdVy1j_E89V0Q</string>
+	<key>GCM_SENDER_ID</key>
+	<string>984886558255</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.unity.arkitscene45w45sehss</string>
+	<key>PROJECT_ID</key>
+	<string>newp-f426c</string>
+	<key>STORAGE_BUCKET</key>
+	<string>newp-f426c.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<true></true>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<false></false>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:984886558255:ios:e2fa2dfd9dbc0bed</string>
+	<key>DATABASE_URL</key>
+	<string>https://newp-f426c.firebaseio.com</string>
+</dict>
+</plist>
