@@ -149,7 +149,7 @@ public class DatabaseConnection : MonoBehaviour {
 			//Debug.Log (cd.pos.x);
 
             // Wait half a second
-            yield return new WaitForSeconds(2.5f);
+            yield return new WaitForSeconds(0.5f);
         }
     }
 
