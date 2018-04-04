@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class FootprintManager : MonoBehaviour
 {
@@ -19,7 +20,13 @@ public class FootprintManager : MonoBehaviour
 
 		// For debug purposes 
 		if (Time.frameCount % 30 == 0) {
-			Debug.Log (data.persons.Count);
+			Debug.Log ("Number of session: " + data.persons.Count);
+			foreach (KeyValuePair<string, PersonData> kvp in data.persons) {
+				Debug.Log (kvp);
+				PersonData cv = kvp.Value;
+				Debug.Log ("User position: " + cv.id + ", " + cv.pos.x + ", " + cv.pos.y + ", " + cv.pos.z);
+				Debug.Log ("User rotation: " + cv.id + ", " + cv.rot.x + ", " + cv.rot.y + ", " + cv.rot.z);
+			}
 		}
 	}
 }
