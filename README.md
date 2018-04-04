@@ -14,3 +14,8 @@ How to build to iPhone:
  - Set the Signing team in Project -> Targets -> Unity-iPhone
  - Run
 
+Dev environment:
+macOS High Sierra version 10.13.3
+iPhone 7 iOS version 11.2.6
+Unity 2017.3.1f1
+XCode version 9.2
