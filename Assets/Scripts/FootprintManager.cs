@@ -59,7 +59,10 @@ public class FootprintManager : MonoBehaviour
 
 	void onPersonArrival (PersonData p)
 	{
-		GameObject go = Instantiate (cubePrefab, p.pos, Quaternion.Euler (p.rot));	
+		p.pos.z = -10;
+		GameObject go = Instantiate (cubePrefab, p.pos, Quaternion.Euler (p.rot));
+		Debug.Log ("A new person arrived!");
+		Debug.Log (string.Format ("x:{0:0.######} y:{1:0.######} z:{2:0.######}", p.pos.x, p.pos.y, p.pos.z));
 		PersonVisual visual = PersonVisual.CreatePersonVisual (p, go);
 		phones.Add (p.id, visual);
 	}
@@ -67,6 +70,7 @@ public class FootprintManager : MonoBehaviour
 	void onPersonLeave (string id)
 	{
 		phones [id].onDestroy ();
+		Debug.Log ("A person left!");
 		phones.Remove (id);
 	}
 

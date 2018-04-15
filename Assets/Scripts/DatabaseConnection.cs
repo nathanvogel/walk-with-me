@@ -111,7 +111,7 @@ public class DatabaseConnection : MonoBehaviour
 
 		// Instanciate the Object from the Firebase JSON data and add it to our array.
 		PersonData person = JsonUtility.FromJson<PersonData> (args.Snapshot.GetRawJsonValue ());
-		//Debug.Log ("CREATE " + person.id);
+		Debug.Log ("CREATE " + person.id);
 		persons.Add (person.id, person);
 	}
 
