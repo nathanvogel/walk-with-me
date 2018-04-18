@@ -111,9 +111,9 @@ public class FootprintManager : MonoBehaviour
 	{
 		var gObj = GameObject.Find("Empty");
 		if (gObj) {
-			p.pos.z = gObj.transform.position.z;
+			p.pos.y = gObj.transform.position.y;
 			//Debug.Log ("Plane detected!");
-			//Debug.Log (string.Format ("z:{0:0.######}", p.pos.z));
+			//Debug.Log (string.Format ("y:{0:0.######}", p.pos.y));
 		}
 	}
 
