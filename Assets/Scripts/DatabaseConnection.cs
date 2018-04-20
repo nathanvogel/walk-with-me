@@ -50,6 +50,9 @@ public class DatabaseConnection : MonoBehaviour
 	public string otherLocationId;
 	// Where the user isn't.
 
+	// Runtime logic
+	private bool hasStarted = false;
+
 	// List of people whose footprint we need to show.
 	public Dictionary<string, PersonData> persons = new Dictionary<string, PersonData> ();
 
@@ -59,15 +62,26 @@ public class DatabaseConnection : MonoBehaviour
 		// To be called before any other Firebase function
 		FirebaseApp.DefaultInstance.SetEditorDatabaseUrl ("https://newp-f426c.firebaseio.com/");
 
+
+	}
+
+
+
+	public void SetLocation(string locationId) {
+
+		if (hasStarted) {
+			return;
+		}
+		hasStarted = true;
+
 		// Set in which room the user is.
 		// This could be determined by:
 		// - Recognition of the origin object/QR code in AR
 		// - GPS coordinates
 		// - User choice
 		// - ...
-		int roomIndex = Random.Range (0, 2);
-		deviceLocationId = rooms [roomIndex];
-		otherLocationId = rooms [roomIndex == 0 ? 1 : 0];
+		deviceLocationId = locationId;
+		otherLocationId = locationId == rooms [0] ? rooms [1] : rooms [0];
 		Debug.Log ("The user is in " + deviceLocationId);
 
 		// Start listening for people 

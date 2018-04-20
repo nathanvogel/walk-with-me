@@ -11,7 +11,7 @@
       }, 
       "oauth_client": [
         {
-          "client_id": "984886558255-gmf1fn4orrcrfdjarutvu9d7jftcli7j.apps.googleusercontent.com"
+          "client_id": "984886558255-shdsp1jujvgljgdra6lp7d4b62vd9ehd.apps.googleusercontent.com"
         }
       ], 
       "api_key": [
@@ -20,9 +20,9 @@
         }
       ], 
       "client_info": {
-        "mobilesdk_app_id": "1:984886558255:ios:e2fa2dfd9dbc0bed", 
+        "mobilesdk_app_id": "1:984886558255:ios:a716c76fc986e493", 
         "android_client_info": {
-          "package_name": "com.unity.arkitscene45w45sehss"
+          "package_name": "com.unity.myan"
         }
       }
     }
