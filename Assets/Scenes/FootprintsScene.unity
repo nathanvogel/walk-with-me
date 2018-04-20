@@ -720,7 +720,7 @@ MonoBehaviour:
   m_camera: {fileID: 10}
   startAlignment: 0
   planeDetection: 1
-  detectionImages: {fileID: 0}
+  detectionImages: {fileID: 11400000, guid: b396137c4279a430c953406ab1ab6501, type: 2}
   getPointCloud: 1
   enableLightEstimation: 1
   enableAutoFocus: 1
@@ -746,6 +746,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1151489348}
   - component: {fileID: 1151489347}
+  - component: {fileID: 1151489349}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -779,6 +780,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1151489349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1151489346}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b2be1c5634b84e8080b2a2491eca344, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  referenceImage: {fileID: 11400000, guid: 8b5beaa3f927d4d8bb4c805a0fad85cd, type: 2}
+  prefabToGenerate: {fileID: 1283292900242102, guid: 8855f6e449b9d4d3fae7f0a1a5ff9c2f,
+    type: 2}
 --- !u!1 &1153389248
 GameObject:
   m_ObjectHideFlags: 0
