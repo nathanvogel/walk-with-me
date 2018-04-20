@@ -34,18 +34,25 @@ public class FindWorldOrigin : MonoBehaviour {
 		// Check that it's one of our images
 		if (arImageAnchor.referenceImageName == imageParsons.imageName 
 			|| arImageAnchor.referenceImageName == imageEcal.imageName) {
+
+			// Visual debug and one empty gameObject is necessary to have a Transform in Unity anyway.
+			Vector3 position = UnityARMatrixOps.GetPosition (arImageAnchor.transform);
+			Quaternion rotation = UnityARMatrixOps.GetRotation (arImageAnchor.transform);
+			imageAnchorGO = Instantiate<GameObject> (prefabToGenerate, position, rotation);
+
+			updateWorldOrigin (imageAnchorGO.transform);
+
 			// If it's Parsons.
 			if (arImageAnchor.referenceImageName == imageParsons.imageName) {
 				data.SetLocation ("parsons");
 			} else if (arImageAnchor.referenceImageName == imageEcal.imageName) {
 				data.SetLocation ("ecal");
 			}
-
-			Vector3 position = UnityARMatrixOps.GetPosition (arImageAnchor.transform);
-			Quaternion rotation = UnityARMatrixOps.GetRotation (arImageAnchor.transform);
-
-			imageAnchorGO = Instantiate<GameObject> (prefabToGenerate, position, rotation);
 		}
+	}
+
+	void updateWorldOrigin(Transform origin) {
+		UnityARSessionNativeInterface.GetARSessionNativeInterface().SetWorldOrigin (origin);
 	}
 
 	void UpdateImageAnchor(ARImageAnchor arImageAnchor)
@@ -55,6 +62,10 @@ public class FindWorldOrigin : MonoBehaviour {
 			|| arImageAnchor.referenceImageName == imageEcal.imageName) {
 			imageAnchorGO.transform.position = UnityARMatrixOps.GetPosition (arImageAnchor.transform);
 			imageAnchorGO.transform.rotation = UnityARMatrixOps.GetRotation (arImageAnchor.transform);
+			//Debug.Log ("X = " + imageAnchorGO.transform.position.x);
+
+			// No need to update the origin again, ARKit seems smart.
+			//updateWorldOrigin (imageAnchorGO.transform);
 		}
 
 	}
