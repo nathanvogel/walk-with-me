@@ -38,9 +38,11 @@ public class DatabaseConnection : MonoBehaviour
 	// quits the application.
 	private bool deleteWhenLeaving = true;
 	private bool filterRooms = true;
+	private float updateInterval = 0.08f;
 
 	// --- Firebase ---
 	// A Firebase Reference to the list of person objects.
+	// Null until we start streaming
 	private DatabaseReference peopleRef;
 
 	// Room IDs
@@ -59,15 +61,26 @@ public class DatabaseConnection : MonoBehaviour
 		// To be called before any other Firebase function
 		FirebaseApp.DefaultInstance.SetEditorDatabaseUrl ("https://newp-f426c.firebaseio.com/");
 
-		// Set in which room the user is.
-		// This could be determined by:
-		// - Recognition of the origin object/QR code in AR
-		// - GPS coordinates
-		// - User choice
-		// - ...
-		int roomIndex = Random.Range (0, 2);
-		deviceLocationId = rooms [roomIndex];
-		otherLocationId = rooms [roomIndex == 0 ? 1 : 0];
+		// If we're running inside Unity, we won't get any image detection event
+		// so we can directly set a fixed location now.
+		#if UNITY_EDITOR
+		SetLocation("parsons");
+		#endif
+	}
+
+
+	/* 
+	 * Called by FindWorldOrigin.cs when an image is detected for the first time.
+	 */
+	public void SetLocation(string locationId) {
+
+		// No need to listen/send again, we can't teleport anyway.
+		if (peopleRef != null) {
+			return;
+		}
+
+		deviceLocationId = locationId;
+		otherLocationId = locationId == rooms [0] ? rooms [1] : rooms [0];
 		Debug.Log ("The user is in " + deviceLocationId);
 
 		// Start listening for people 
@@ -153,20 +166,17 @@ public class DatabaseConnection : MonoBehaviour
 			// The ID that identifies the person in the room.
 			string id = SystemInfo.deviceUniqueIdentifier;
 
+			// Get the position of the current camera.
 			PersonData cd = PersonData.CreatePersonData (Camera.main.transform, deviceLocationId);
 			string scd = JsonUtility.ToJson (cd);
 
 			// Save to Firebase
 			peopleRef.Child (cd.id).SetRawJsonValueAsync (scd);
-			//Debug.Log (cd.pos.x);
 
-			// Wait half a second
-			yield return new WaitForSeconds (0.1f);
+			// Wait some time before sending again
+			yield return new WaitForSeconds (updateInterval);
 		}
 	}
-
-
-
 
 
 
@@ -176,13 +186,12 @@ public class DatabaseConnection : MonoBehaviour
 		/*
 		// This isn't really needed and peopleRef is already null in OnDestroy
 		// (which causes an error) so it probably belong somewhere else, if at all necessary.
-		// Turn off Firebase listener to clean up the app.
 		peopleRef.ChildAdded -= HandleChildAdded;
 		peopleRef.ChildChanged -= HandleChildChanged;
 		peopleRef.ChildRemoved -= HandleChildRemoved;
 		*/
 
-		if (deleteWhenLeaving) { 
+		if (deleteWhenLeaving && peopleRef != null) { 
 			// Also remove the people object here to ensure immediate effect.
 			string id = SystemInfo.deviceUniqueIdentifier;
 			peopleRef.Child (id).RemoveValueAsync ();

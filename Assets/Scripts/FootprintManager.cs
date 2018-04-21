@@ -59,11 +59,12 @@ public class FootprintManager : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
+		/*
 		// For debug purposes 
 		if (Time.frameCount % 30 == 0) {
 			Debug.Log (data.persons.Count);
 		}
-
+		*/
 
 
 		foreach (KeyValuePair<string,PersonData> person in data.persons) {
@@ -83,11 +84,13 @@ public class FootprintManager : MonoBehaviour
 			}
 		}
 
+		/*
 		foreach (KeyValuePair<string,PersonData> person in data.persons) {
 			if (phones.ContainsKey (person.Key)) {
 				planeUpdate (person.Value);
 			}
 		}
+		*/
 	}
 
 	void onPersonArrival (PersonData p)
