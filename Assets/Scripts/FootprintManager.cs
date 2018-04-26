@@ -96,9 +96,6 @@ public class FootprintManager : MonoBehaviour
 	void onPersonArrival (PersonData p)
 	{
 		// Find the position of the empty object
-		p.pos.y = -50;
-		p.rot.y = 0;
-
 		GameObject go = Instantiate (cubePrefab, p.pos, Quaternion.Euler (p.rot));
 		Debug.Log ("A new person arrived!");
 		Debug.Log (string.Format ("x:{0:0.######} y:{1:0.######} z:{2:0.######}", p.pos.x, p.pos.y, p.pos.z));
