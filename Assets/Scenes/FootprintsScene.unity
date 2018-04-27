@@ -917,6 +917,8 @@ MonoBehaviour:
   prefabToGenerate: {fileID: 1283292900242102, guid: 6cc9592ec0fb34f389566dea223bee94,
     type: 2}
   data: {fileID: 1987340050}
+  imageAnchorGO: {fileID: 0}
+  yPos: 0
 --- !u!1 &1153389248
 GameObject:
   m_ObjectHideFlags: 0

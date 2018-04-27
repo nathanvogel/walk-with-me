@@ -19,6 +19,7 @@ public class FindWorldOrigin : MonoBehaviour {
 	public DatabaseConnection data;
 
 	private GameObject imageAnchorGO;
+	public static float yPos;
 
 	// Use this for initialization
 	void Start () {
@@ -62,12 +63,14 @@ public class FindWorldOrigin : MonoBehaviour {
 			|| arImageAnchor.referenceImageName == imageEcal.imageName) {
 			imageAnchorGO.transform.position = UnityARMatrixOps.GetPosition (arImageAnchor.transform);
 			imageAnchorGO.transform.rotation = UnityARMatrixOps.GetRotation (arImageAnchor.transform);
-			//Debug.Log ("X = " + imageAnchorGO.transform.position.x);
+//			Debug.Log ("Y = " + imageAnchorGO.transform.position.y);
 
 			// No need to update the origin again, ARKit seems smart.
 			//updateWorldOrigin (imageAnchorGO.transform);
 		}
 
+		yPos = imageAnchorGO.transform.position.y;
+//		Debug.Log ("imageAnchorGo y position + " + yPos);
 	}
 
 	void RemoveImageAnchor(ARImageAnchor arImageAnchor)
