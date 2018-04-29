@@ -70,7 +70,7 @@ public class FindWorldOrigin : MonoBehaviour {
 		}
 
 		yPos = imageAnchorGO.transform.position.y;
-//		Debug.Log ("imageAnchorGo y position + " + yPos);
+		Debug.Log ("imageAnchorGo y position + " + yPos);
 	}
 
 	void RemoveImageAnchor(ARImageAnchor arImageAnchor)

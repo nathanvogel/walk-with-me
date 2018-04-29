@@ -392,7 +392,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!82 &520917583
 AudioSource:
   m_ObjectHideFlags: 0
@@ -886,7 +886,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d04469c260684b3cbb5973426daf7db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cubePrefab: {fileID: 1582801503003862, guid: 18d047dd79acc4e36868995a37921aa7, type: 2}
+  footprintsPrefab: {fileID: 1730773314630924, guid: b15a75d790694414db16c5c7be36461c,
+    type: 2}
   data: {fileID: 1987340050}
 --- !u!4 &1151489348
 Transform:
@@ -917,8 +918,6 @@ MonoBehaviour:
   prefabToGenerate: {fileID: 1283292900242102, guid: 6cc9592ec0fb34f389566dea223bee94,
     type: 2}
   data: {fileID: 1987340050}
-  imageAnchorGO: {fileID: 0}
-  yPos: 0
 --- !u!1 &1153389248
 GameObject:
   m_ObjectHideFlags: 0
@@ -1126,7 +1125,7 @@ GameObject:
   - component: {fileID: 1712752153}
   - component: {fileID: 1712752152}
   m_Layer: 0
-  m_Name: Camera
+  m_Name: Camera (for Editor)
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1189,7 +1188,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1712752151}
   m_LocalRotation: {x: 0.04782395, y: -0.9002393, z: 0.12089323, w: 0.4155322}
-  m_LocalPosition: {x: 2.161, y: 0.74, z: 2.165}
+  m_LocalPosition: {x: 0.27, y: 0.6, z: 1.35}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
