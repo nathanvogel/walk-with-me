@@ -45,7 +45,6 @@ public class PersonVisual
 public class FootprintManager : MonoBehaviour
 {
 	public GameObject cubePrefab;
-	GameObject myCube;
 
 	Dictionary<string, PersonVisual> phones = new Dictionary<string, PersonVisual> ();
 
@@ -59,12 +58,12 @@ public class FootprintManager : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
+		/*
 		// For debug purposes 
 		if (Time.frameCount % 30 == 0) {
 			Debug.Log (data.persons.Count);
 		}
-
-
+		*/
 
 		foreach (KeyValuePair<string,PersonData> person in data.persons) {
 			// Check for persons arriving in the room
@@ -83,16 +82,27 @@ public class FootprintManager : MonoBehaviour
 			}
 		}
 
+		// Need to adjust this part of the code to draw the footprint at the position instead of overwriting it
 		foreach (KeyValuePair<string,PersonData> person in data.persons) {
 			if (phones.ContainsKey (person.Key)) {
 				planeUpdate (person.Value);
 			}
+		}
+
+		// Get the distance between me and the other objects
+		foreach (KeyValuePair<string,PersonData> person in data.persons) {
+			proximityDetect(Camera.main.transform.position, person.Value);
 		}
 	}
 
 	void onPersonArrival (PersonData p)
 	{
 		// Find the position of the empty object
+
+		// Need to adjust this part too as it fixes the rotation
+		p.rot.x = 90;
+		p.rot.y = 0;
+
 		GameObject go = Instantiate (cubePrefab, p.pos, Quaternion.Euler (p.rot));
 		Debug.Log ("A new person arrived!");
 		Debug.Log (string.Format ("x:{0:0.######} y:{1:0.######} z:{2:0.######}", p.pos.x, p.pos.y, p.pos.z));
@@ -109,11 +119,31 @@ public class FootprintManager : MonoBehaviour
 
 	void planeUpdate (PersonData p)
 	{
-		var gObj = GameObject.Find("Empty");
-		if (gObj) {
-			p.pos.y = gObj.transform.position.y;
-			//Debug.Log ("Plane detected!");
-			//Debug.Log (string.Format ("y:{0:0.######}", p.pos.y));
+		// Need to adjust this part too as it fixes the rotation
+		p.rot.x = 90;
+		p.rot.y = 0;
+
+		// Check the anchor image position
+		if (!FindWorldOrigin.yPos.Equals(null)) {
+			p.pos.y = FindWorldOrigin.yPos;
+//			Debug.Log ("Pass Anchor position to objects");
+//			Debug.Log (string.Format ("y:{0:0.######}", p.pos.y));
+		}
+	}
+
+	bool proximityDetect (Vector3 mainPos, PersonData p)
+	{
+		float dist = Vector3.Distance (mainPos, p.pos);
+		Debug.Log ("Distance to other: " + dist);
+
+		if (dist < 0.5) {
+			Debug.Log ("A person is approaching!");
+
+			//Need to add interaction
+
+			return true;
+		} else {
+			return false;
 		}
 	}
 
