@@ -2529,8 +2529,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   footstepPrefab: {fileID: 1761157349647444, guid: 64ce02194c6f6a442a4cb747c62d1717,
     type: 2}
-  footstepLength: 0.3
-  footstepOffset: 0.2
+  footstepLength: 0.2
+  footstepOffset: 0.15
   lastPos: {x: 0, y: 0, z: 0}
 --- !u!136 &136714992489170860
 CapsuleCollider:

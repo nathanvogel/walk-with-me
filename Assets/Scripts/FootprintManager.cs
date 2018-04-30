@@ -28,15 +28,17 @@ public class PersonVisual
 		// Vector3 is a struct, so assigning it creates a copy.
 		// This way we don't modify the original data in PersonData.
 		Vector3 constrainedPosition = person.pos;
-		// Check the anchor image position and put the footprint generator slightly
-		// above the ground (in case we do collisions, but I disabled gravity now.)
+		// Check the anchor image position and put the footprint generator at this position
+		/*
 		if (!FindWorldOrigin.yPos.Equals (null)) {
-			constrainedPosition.y = FindWorldOrigin.yPos + 0.04f;
+			constrainedPosition.y = FindWorldOrigin.yPos;
 //			Debug.Log ("Pass Anchor position to objects");
 //			Debug.Log (string.Format ("y:{0:0.######}", constrainedPosition.y));
 		} else {
-			constrainedPosition.y = 0.04f;
+			constrainedPosition.y = 0f;
 		}
+		*/
+		constrainedPosition.y = 0f;
 		footprintGenerator.transform.position = constrainedPosition;
 
 		// Constrain the rotation on irrelevant axis
@@ -85,10 +87,14 @@ public class FootprintManager : MonoBehaviour
 		}
 
 		// Check for persons leaving the room.
+		List<string> toRemove = new List<string>();
 		foreach (KeyValuePair<string,PersonVisual> visual in visuals) {
 			if (!data.persons.ContainsKey (visual.Key)) {
-				onPersonLeave (visual.Key);
+				toRemove.Add (visual.Key);
 			}
+		}
+		foreach (string key in toRemove) {
+			onPersonLeave (key);
 		}
 
 		// Update the position of every footprint visual.

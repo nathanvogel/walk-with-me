@@ -15,12 +15,13 @@ public class FootprintsGenerator : MonoBehaviour {
     public static Vector3 rightPos;
     private LinkedList<GameObject> steps;
     public static bool destroy = false;
+
+
     void Start () { 
         lastPos = gameObject.transform.position;
         rigitBody = gameObject.GetComponent<Rigidbody>();
         steps = new LinkedList<GameObject>();
 	}
-    //round dem bobs
   
 
     // Update is called once per frame
@@ -61,10 +62,14 @@ public class FootprintsGenerator : MonoBehaviour {
                 left = true;
                 rightPos = stepPos;
             }
-            Instantiate(footstepPrefab, stepPos, rotation);
-        
-
+			steps.AddLast(Instantiate(footstepPrefab, stepPos, rotation));
         }
-       		
+	}
+
+	void OnDestroy() {
+		foreach(GameObject step in steps)
+		{
+			Destroy (step);
+		}
 	}
 }
