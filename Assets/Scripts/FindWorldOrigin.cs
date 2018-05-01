@@ -12,10 +12,7 @@ public class FindWorldOrigin : MonoBehaviour {
 	[SerializeField]
 	private ARReferenceImage imageEcal;
 
-	[SerializeField]
-	private GameObject prefabToGenerate;
-
-	[SerializeField]
+	public GameObject prefabToGenerate;
 	public DatabaseConnection data;
 
 	private GameObject imageAnchorGO;
