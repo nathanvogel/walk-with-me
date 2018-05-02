@@ -12,10 +12,7 @@ public class FindWorldOrigin : MonoBehaviour {
 	[SerializeField]
 	private ARReferenceImage imageEcal;
 
-	[SerializeField]
-	private GameObject prefabToGenerate;
-
-	[SerializeField]
+	public GameObject prefabToGenerate;
 	public DatabaseConnection data;
 
 	private GameObject imageAnchorGO;
@@ -70,7 +67,7 @@ public class FindWorldOrigin : MonoBehaviour {
 		}
 
 		yPos = imageAnchorGO.transform.position.y;
-//		Debug.Log ("imageAnchorGo y position + " + yPos);
+		Debug.Log ("imageAnchorGo y position + " + yPos);
 	}
 
 	void RemoveImageAnchor(ARImageAnchor arImageAnchor)

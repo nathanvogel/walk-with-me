@@ -58,13 +58,18 @@ public class DatabaseConnection : MonoBehaviour
 
 	void Start ()
 	{
-		// To be called before any other Firebase function
+		// Setting the URL is only needed in the editor.
+		#if UNITY_EDITOR
+		// Warning: Putting this in Awake() makes the Unity Editor crash!
 		FirebaseApp.DefaultInstance.SetEditorDatabaseUrl ("https://newp-f426c.firebaseio.com/");
+		Debug.Log ("Editor detected: setting url");
+		#endif
 
 		// If we're running inside Unity, we won't get any image detection event
 		// so we can directly set a fixed location now.
 		#if UNITY_EDITOR
-		SetLocation("parsons");
+		Debug.Log ("Editor detected: Auto-setting location");
+		SetLocation ("ecal");
 		#endif
 	}
 
@@ -72,10 +77,12 @@ public class DatabaseConnection : MonoBehaviour
 	/* 
 	 * Called by FindWorldOrigin.cs when an image is detected for the first time.
 	 */
-	public void SetLocation(string locationId) {
+	public void SetLocation (string locationId)
+	{
 
 		// No need to listen/send again, we can't teleport anyway.
 		if (peopleRef != null) {
+			Debug.Log ("Cancel SetLocation() because it was already called");
 			return;
 		}
 
@@ -88,11 +95,13 @@ public class DatabaseConnection : MonoBehaviour
 		// Filter the users to only get the data from the other room.
 		var query = peopleRef.OrderByChild ("locationId");
 		if (filterRooms) {
+			Debug.Log ("Filter rooms to only: " + otherLocationId);
 			query = query.EqualTo (otherLocationId);
 			// If we later want to show footprints from more than 2 rooms, we could use this technic:
 			// https://stackoverflow.com/questions/39195191/firebase-query-to-exclude-data-based-on-a-condition/39195551#39195551
 			// Or we could structure the data by room: /rooms/<roomId>/people/<personId>
 		}
+		Debug.Log ("Adding listeners");
 		query.ChildAdded += HandleChildAdded;
 		query.ChildChanged += HandleChildChanged;
 		query.ChildRemoved += HandleChildRemoved;
@@ -101,6 +110,7 @@ public class DatabaseConnection : MonoBehaviour
 		// cutting the connection to Firebase and triggering OnDisconnect().
 		// This happens server-side, so it should work even if the app crashes.
 		if (deleteWhenLeaving) {
+			Debug.Log ("Will delete on leave");
 			string id = SystemInfo.deviceUniqueIdentifier;
 			peopleRef.Child (id).OnDisconnect ().RemoveValue ();
 		}
@@ -140,7 +150,7 @@ public class DatabaseConnection : MonoBehaviour
 
 		// Get new data
 		PersonData person = JsonUtility.FromJson<PersonData> (args.Snapshot.GetRawJsonValue ());
-		//Debug.Log ("UPDATE " + person.id);
+//		Debug.Log ("UPDATE " + person.id);
 		persons [person.id] = person;
 
 	}
