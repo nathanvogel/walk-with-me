@@ -61,7 +61,7 @@ public class FootprintManager : MonoBehaviour
 
 	Dictionary<string, PersonVisual> visuals = new Dictionary<string, PersonVisual> ();
 
-
+	public static bool prox = false;
 	public DatabaseConnection data;
 
 	void Start ()
@@ -129,15 +129,16 @@ public class FootprintManager : MonoBehaviour
 	bool proximityDetect (Vector3 mainPos, PersonData p)
 	{
 		float dist = Vector3.Distance (mainPos, p.pos);
-		//Debug.Log ("Distance to other: " + dist);
+		Debug.Log ("Distance to other: " + dist);
 
 		if (dist < 0.5) {
+			prox = true;
 			Debug.Log ("A person is approaching!");
-
-			//Need to add interaction
 
 			return true;
 		} else {
+			prox = false;
+
 			return false;
 		}
 	}
