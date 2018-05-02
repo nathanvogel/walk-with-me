@@ -9,14 +9,13 @@ public class SoundController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		m_audio = GetComponent<AudioSource>();
-//		m_audio.Pause ();
+		m_audio.Pause ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-//		m_audio.Play ();
 		if (FootprintManager.prox) {
-			m_audio.Play ();
+			m_audio.UnPause ();
 		} else {
 			m_audio.Pause ();
 		}
