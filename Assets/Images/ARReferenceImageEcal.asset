@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Name: ARReferenceImageEcal
   m_EditorClassIdentifier: 
   imageName: imageEcal
-  imageTexture: {fileID: 2800000, guid: 4277c1840dedb4b21b44a2f87f25ede6, type: 3}
-  physicalSize: 0.192
+  imageTexture: {fileID: 2800000, guid: 1694e2424b8f94e9db892c433beb1ed7, type: 3}
+  physicalSize: 0.169072

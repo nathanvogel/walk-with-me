@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Name: ARReferenceImageParsons
   m_EditorClassIdentifier: 
   imageName: imageParsons
-  imageTexture: {fileID: 2800000, guid: 9ca6f9cacc7eb48028dc86efedcc58c2, type: 3}
-  physicalSize: 0.1845
+  imageTexture: {fileID: 2800000, guid: 03d5deb96f7d540cfbe3521881a751a2, type: 3}
+  physicalSize: 0.169072
