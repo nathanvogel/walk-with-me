@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Newtonsoft.Json;
+using System.IO;
 using Firebase;
 using Firebase.Unity.Editor;
 using Firebase.Database;
@@ -19,6 +20,10 @@ public class PersonData
 	[System.NonSerialized]
 	public float distance;
 
+	PersonData() {
+		// Parameterless default constructor for Newtonsoft JSON deserializing
+	}
+
 	PersonData (Vector3 pos, Vector3 rot, string locationId)
 	{
 		this.pos = pos;
@@ -33,13 +38,23 @@ public class PersonData
 		return new PersonData (t.position, t.rotation.eulerAngles, locationId);
 	}
 
-	public static PersonData Deserialize (string str)
+	public static PersonData CreateFromJson (JsonSerializer serializer, string str)
 	{
-		PersonData p = JsonUtility.FromJson<PersonData> (str);
+		PersonData p = serializer.Deserialize<PersonData> (new JsonTextReader (new StringReader(str)));
 		p.computeLocalValues ();
 		return p;
 	}
 
+	public void updateFromJson (JsonSerializer serializer, string str)
+	{
+		// Use Newtonsoft's JSON library to avoid recreating objects on update
+		// This way, we don't have to transfer local (future) attributes (color, distance, name).
+		serializer.Populate (new StringReader (str), this);
+		this.computeLocalValues ();
+	}
+
+	// Calculate values that belong inside this class but not in the database.
+	// Should be updated: on creation, on data update, on frame (in case of relevant external changes).
 	public void computeLocalValues ()
 	{
 		Vector2 userXZ = new Vector2 (Camera.main.transform.position.x, Camera.main.transform.position.z);
@@ -51,7 +66,7 @@ public class PersonData
 
 public class DatabaseConnection : MonoBehaviour
 {
-
+	
 	// --- Data behavior settings ---
 	// Controls whether objects are deleted from Firebase when the user
 	// quits the application.
@@ -63,13 +78,15 @@ public class DatabaseConnection : MonoBehaviour
 	// A Firebase Reference to the list of person objects.
 	// Null until we start streaming
 	private DatabaseReference peopleRef;
+	// JSON helper
+	JsonSerializer serializer = new JsonSerializer();
 
 	// Room IDs
 	public string[] rooms = { "parsons", "ecal" };
-	public string deviceLocationId;
 	// Where the user is.
-	public string otherLocationId;
+	public string deviceLocationId;
 	// Where the user isn't.
+	public string otherLocationId;
 
 	// List of people whose footprint we need to show.
 	public Dictionary<string, PersonData> persons = new Dictionary<string, PersonData> ();
@@ -152,7 +169,7 @@ public class DatabaseConnection : MonoBehaviour
 		}
 
 		// Instanciate the Object from the Firebase JSON data and add it to our array.
-		PersonData person = PersonData.Deserialize (args.Snapshot.GetRawJsonValue ());
+		PersonData person = PersonData.CreateFromJson (serializer, args.Snapshot.GetRawJsonValue ());
 //		Debug.Log ("CREATE " + person.id);
 		persons.Add (person.id, person);
 	}
@@ -168,9 +185,8 @@ public class DatabaseConnection : MonoBehaviour
 		}
 
 		// Get new data
-		PersonData person = PersonData.Deserialize (args.Snapshot.GetRawJsonValue ());
 //		Debug.Log ("UPDATE " + person.id);
-		persons [person.id] = person;
+		persons [args.Snapshot.Key].updateFromJson(serializer, args.Snapshot.GetRawJsonValue ());
 
 	}
 
