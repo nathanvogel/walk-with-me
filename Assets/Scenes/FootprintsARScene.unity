@@ -318,7 +318,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &229804521
 Transform:
   m_ObjectHideFlags: 0
@@ -888,6 +888,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   footprintsPrefab: {fileID: 1730773314630924, guid: b15a75d790694414db16c5c7be36461c,
     type: 2}
+  phonePrefab: {fileID: 1487585984922228, guid: cca79370885b846aa901b8a38dbae9d9,
+    type: 2}
   data: {fileID: 1987340050}
 --- !u!4 &1151489348
 Transform:
@@ -1130,7 +1132,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!81 &1712752152
 AudioListener:
   m_ObjectHideFlags: 0

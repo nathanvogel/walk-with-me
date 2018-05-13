@@ -23,7 +23,6 @@ public class FindWorldOrigin : MonoBehaviour {
 		UnityARSessionNativeInterface.ARImageAnchorAddedEvent += AddImageAnchor;
 		UnityARSessionNativeInterface.ARImageAnchorUpdatedEvent += UpdateImageAnchor;
 		UnityARSessionNativeInterface.ARImageAnchorRemovedEvent += RemoveImageAnchor;
-
 	}
 
 	void AddImageAnchor(ARImageAnchor arImageAnchor)
@@ -50,6 +49,8 @@ public class FindWorldOrigin : MonoBehaviour {
 	}
 
 	void updateWorldOrigin(Transform origin) {
+		// Instead of setting the world origin, we could also apply the delta ourself 
+		// when moving our objects if doing it onAnchorUpdate is buggy
 		UnityARSessionNativeInterface.GetARSessionNativeInterface().SetWorldOrigin (origin);
 	}
 

@@ -7,37 +7,31 @@ public class PersonVisual
 {
 	public string id;
 	GameObject footprintGenerator;
+	GameObject phone;
 
-	PersonVisual (PersonData p, GameObject gameObject)
+	PersonVisual (PersonData p, GameObject go_footprints, GameObject go_phone)
 	{
 		// Create a new object, but doesn't set the position. 
 		// This is handled later by updateVisual().
 		this.id = p.id;
-		this.footprintGenerator = gameObject;
+		this.footprintGenerator = go_footprints;
+		this.phone = go_phone;
 	}
 
 	// Convenience
-	public static PersonVisual CreatePersonVisual (PersonData p, GameObject go)
+	public static PersonVisual CreatePersonVisual (PersonData p, GameObject go_footprints, GameObject go_phone)
 	{
-		return new PersonVisual (p, go);
+		return new PersonVisual (p, go_footprints, go_phone);
 	}
 
 	public void updateVisual (PersonData person)
 	{
+		// FOOTPRINTS
 		// Constrain the position on the height 
 		// Vector3 is a struct, so assigning it creates a copy.
 		// This way we don't modify the original data in PersonData.
 		Vector3 constrainedPosition = person.pos;
 		// Check the anchor image position and put the footprint generator at this position
-		/*
-		if (!FindWorldOrigin.yPos.Equals (null)) {
-			constrainedPosition.y = FindWorldOrigin.yPos;
-//			Debug.Log ("Pass Anchor position to objects");
-//			Debug.Log (string.Format ("y:{0:0.######}", constrainedPosition.y));
-		} else {
-			constrainedPosition.y = 0f;
-		}
-		*/
 		constrainedPosition.y = 0f;
 		footprintGenerator.transform.position = constrainedPosition;
 
@@ -46,11 +40,22 @@ public class PersonVisual
 		constrainedRotation.x = 0;
 		constrainedRotation.z = 0;
 		footprintGenerator.transform.rotation = Quaternion.Euler (constrainedRotation);
+
+		// PHONE
+		if (person.distance < 1f) {
+			phone.GetComponent<Renderer> ().enabled = true;
+			// Move the phone
+			phone.transform.position = person.pos;
+			phone.transform.rotation = Quaternion.Euler (person.rot);
+		} else {
+			phone.GetComponent<Renderer> ().enabled = false;
+		}
 	}
 
 	public void onDestroy ()
 	{
 		Object.Destroy (this.footprintGenerator);
+		Object.Destroy (this.phone);
 	}
 }
 
@@ -58,6 +63,7 @@ public class PersonVisual
 public class FootprintManager : MonoBehaviour
 {
 	public GameObject footprintsPrefab;
+	public GameObject phonePrefab;
 
 	Dictionary<string, PersonVisual> visuals = new Dictionary<string, PersonVisual> ();
 
@@ -101,51 +107,25 @@ public class FootprintManager : MonoBehaviour
 		foreach (KeyValuePair<string,PersonData> personData in data.persons) {
 			visuals [personData.Key].updateVisual (personData.Value);
 		}
-
-		// Get the distance between me and the other objects
-		foreach (KeyValuePair<string,PersonData> person in data.persons) {
-			proximityDetect (Camera.main.transform.position, person.Value);
-		}
 	}
 
 	void onPersonArrival (PersonData p)
 	{
-		Debug.Log ("A new person arrived!");
+		Debug.Log ("Someone arrived!");
 		Debug.Log (string.Format ("x:{0:0.######} y:{1:0.######} z:{2:0.######}", p.pos.x, p.pos.y, p.pos.z));
 
-		GameObject go = Instantiate (footprintsPrefab, p.pos, Quaternion.Euler (p.rot));
-		PersonVisual visual = PersonVisual.CreatePersonVisual (p, go);
+		GameObject go_footprints = Instantiate (footprintsPrefab, p.pos, Quaternion.Euler (p.rot));
+		GameObject go_phone = Instantiate (phonePrefab, p.pos, Quaternion.Euler (p.rot));
+		PersonVisual visual = PersonVisual.CreatePersonVisual (p, go_footprints, go_phone);
 		visuals.Add (p.id, visual);
 	}
 
 	void onPersonLeave (string id)
 	{
-		Debug.Log ("A person left!");
+		Debug.Log ("Someone left!");
 
 		visuals [id].onDestroy ();
 		visuals.Remove (id);
-	}
-
-	bool proximityDetect (Vector3 mainPos, PersonData p)
-	{
-		float dist = Vector3.Distance (mainPos, p.pos);
-		//Debug.Log ("Distance to other: " + dist);
-
-		if (dist < 0.5) {
-			Debug.Log ("A person is approaching!");
-
-			//Need to add interaction
-
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	void destruction ()
-	{
-		Destroy (this.gameObject); 
-
 	}
 }
 
