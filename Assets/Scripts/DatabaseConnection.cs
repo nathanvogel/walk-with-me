@@ -94,13 +94,6 @@ public class DatabaseConnection : MonoBehaviour
 
 	void Start ()
 	{
-		// Setting the URL is only needed in the editor.
-		#if UNITY_EDITOR
-		// Warning: Putting this in Awake() makes the Unity Editor crash!
-		FirebaseApp.DefaultInstance.SetEditorDatabaseUrl ("https://newp-f426c.firebaseio.com/");
-		Debug.Log ("Editor detected: Set Firebase URL");
-		#endif
-
 		// If we're running inside Unity, we won't get any image detection event
 		// so we can directly set a fixed location now.
 		#if UNITY_EDITOR
