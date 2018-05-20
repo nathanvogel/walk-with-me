@@ -18,7 +18,8 @@ public class MessageData
 	public string uid;
 	public string text;
 
-	MessageData() {
+	MessageData ()
+	{
 		// Parameterless default constructor for Newtonsoft JSON deserializing
 	}
 
@@ -40,7 +41,7 @@ public class MessageData
 
 	public static MessageData CreateFromJson (JsonSerializer serializer, string str)
 	{
-		MessageData m = serializer.Deserialize<MessageData> (new JsonTextReader (new StringReader(str)));
+		MessageData m = serializer.Deserialize<MessageData> (new JsonTextReader (new StringReader (str)));
 		return m;
 	}
 
@@ -57,7 +58,7 @@ public class Messaging : MonoBehaviour
 	private DatabaseReference messagesRef;
 	private Query messagesQuery;
 	// JSON helper
-	JsonSerializer serializer = new JsonSerializer();
+	JsonSerializer serializer = new JsonSerializer ();
 
 	// List of messages that we need to show.
 	public Dictionary<string, MessageData> messages = new Dictionary<string, MessageData> ();
@@ -67,6 +68,8 @@ public class Messaging : MonoBehaviour
 	public InputField messageField;
 	public Button sendButton;
 
+	public Canvas messageUI;
+
 
 	void Start ()
 	{
@@ -74,8 +77,8 @@ public class Messaging : MonoBehaviour
 		string id = SystemInfo.deviceUniqueIdentifier;
 
 		// Start listening for people 
-		messagesRef = FirebaseDatabase.DefaultInstance.GetReference ("chats").Child(id).Child("m");
-		messagesQuery = messagesRef.OrderByKey();
+		messagesRef = FirebaseDatabase.DefaultInstance.GetReference ("chats").Child (id).Child ("m");
+		messagesQuery = messagesRef.OrderByKey ();
 
 		Debug.Log ("Adding listeners for messages");
 		messagesQuery.ChildAdded += HandleChildAdded;
@@ -97,8 +100,17 @@ public class Messaging : MonoBehaviour
 
 		// Instanciate the Object from the Firebase JSON data and add it to our array.
 		MessageData message = MessageData.CreateFromJson (serializer, args.Snapshot.GetRawJsonValue ());
-		Debug.Log ("Got Message " + message.id);
+		Debug.Log ("Got Message " + message.id + " and x = " + message.pos.x);
 		messages.Add (message.id, message);
+
+		Vector3 rotation = message.rot;
+		rotation.x = 0;
+		rotation.z = 0;
+		Canvas canvas = Instantiate (messageUI, message.pos, Quaternion.Euler (rotation));
+		Text text = (Text) canvas.GetComponentsInChildren<Text>().GetValue(0);
+		text.text = message.text;
+		print("Canvas at " + canvas.transform.position.x);
+//		text.transform.pos
 	}
 
 	void HandleChildChanged (object sender, ChildChangedEventArgs args)
@@ -110,7 +122,7 @@ public class Messaging : MonoBehaviour
 		}
 
 		// Get new data
-		messages [args.Snapshot.Key].updateFromJson(serializer, args.Snapshot.GetRawJsonValue ());
+		messages [args.Snapshot.Key].updateFromJson (serializer, args.Snapshot.GetRawJsonValue ());
 
 	}
 
@@ -128,39 +140,41 @@ public class Messaging : MonoBehaviour
 
 
 
-	void SendMessage() {
+	void SendMessage ()
+	{
 		// Build the message
 		// The ID that identifies the person in the room.
 		string id = SystemInfo.deviceUniqueIdentifier;
 		// The message
-		string text = messageField.text.Trim();
+		string text = messageField.text.Trim ();
 		if (text.Length == 0)
 			return;
 		// Get the position of the current camera.
-		MessageData message = MessageData.CreateNewMessage(Camera.main.transform, text);
+		MessageData message = MessageData.CreateNewMessage (Camera.main.transform, text);
 		string rawJson = JsonUtility.ToJson (message);
 
 
 		// Save to Firebase
-		print("Sending...");
+		print ("Sending...");
 		messageField.interactable = false;
 		sendButton.interactable = false;
-		messagesRef.Child (message.id).SetRawJsonValueAsync (rawJson).ContinueWith(task => {
+		messagesRef.Child (message.id).SetRawJsonValueAsync (rawJson).ContinueWith (task => {
 			if (task.IsFaulted) {
 				// Handle the error...
-				Debug.Log("Couldn't save the message");
-				Debug.Log(task.Exception.Message);
-			}
-			else if (task.IsCompleted) {
+				Debug.Log ("Couldn't save the message");
+				Debug.Log (task.Exception.Message);
+			} else if (task.IsCompleted) {
 				messageField.text = "";
 			}
 			messageField.interactable = true;
 			sendButton.interactable = true;
-		});;
+		});
+		;
 	}
 
 
-	public void OnClick(){
+	public void OnClick ()
+	{
 		SendMessage ();
 	}
 

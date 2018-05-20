@@ -39,5 +39,5 @@ EditorBuildSettings:
     path: Assets/UnityARKitPlugin/Assets/UnityARKitPlugin/Examples/FaceTracking/FaceDirectionalLightEstimate.unity
     guid: 360fd35caee4f4e069485021a27c0b06
   - enabled: 1
-    path: Assets/Scenes/FootprintsScene.unity
+    path: Assets/Scenes/FootprintsARScene.unity
     guid: d5ec2e26c53e149b09d6f430583a6b0e
