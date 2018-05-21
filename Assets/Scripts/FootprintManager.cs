@@ -16,6 +16,7 @@ public class PersonVisual
 		this.id = p.id;
 		this.footprintGenerator = go_footprints;
 		this.phone = go_phone;
+		this.phone.name = "Phone." + this.id;
 	}
 
 	// Convenience

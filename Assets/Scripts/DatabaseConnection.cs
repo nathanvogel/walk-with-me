@@ -96,10 +96,10 @@ public class DatabaseConnection : MonoBehaviour
 	{
 		// If we're running inside Unity, we won't get any image detection event
 		// so we can directly set a fixed location now.
-		#if UNITY_EDITOR
-		Debug.Log ("Editor detected: Auto-setting location");
-		SetLocation ("ecal");
-		#endif
+//		#if UNITY_EDITOR
+//		Debug.Log ("Editor detected: Auto-setting location");
+//		SetLocation ("ecal");
+//		#endif
 	}
 
 

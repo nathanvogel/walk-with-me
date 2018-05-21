@@ -62,6 +62,8 @@ public class Messaging : MonoBehaviour
 
 	// List of messages that we need to show.
 	public Dictionary<string, MessageData> messages = new Dictionary<string, MessageData> ();
+	public bool sending = false;
+	public PhoneCollisionManager sendInteractionChecker;
 
 
 	// --- UI ---
@@ -102,14 +104,6 @@ public class Messaging : MonoBehaviour
 		MessageData message = MessageData.CreateFromJson (serializer, args.Snapshot.GetRawJsonValue ());
 		Debug.Log ("Got Message " + message.id + " and x = " + message.pos.x);
 		messages.Add (message.id, message);
-
-		Vector3 rotation = message.rot;
-		rotation.x = 0;
-		rotation.z = 0;
-		Canvas canvas = Instantiate (messageUI, message.pos, Quaternion.Euler (rotation));
-		Text text = (Text) canvas.GetComponentsInChildren<Text>().GetValue(0);
-		text.text = message.text;
-		print("Canvas at " + canvas.transform.position.x);
 //		text.transform.pos
 	}
 
@@ -139,37 +133,80 @@ public class Messaging : MonoBehaviour
 	}
 
 
+	void Update ()
+	{
+		if (sendInteractionChecker.shouldSend ()) {
+			// SendMessage() takes care of checking if basic conditions
+			// for sending messages are met, so we can call that on 
+			// every frame.
+			// Case not well handled : errors when sending while cause retry everytime
+			SendMessage ();
+		}
+	}
+
 
 	void SendMessage ()
 	{
+		// Check that we aren't already sending.
+		if (sending)
+			return;
+		// The message
+		string text = messageField.text.Trim ();
+		// will only send if there's a content.
+		if (text.Length == 0)
+			return;
+		
 		// Build the message
 		// The ID that identifies the person in the room.
 		string id = SystemInfo.deviceUniqueIdentifier;
-		// The message
-		string text = messageField.text.Trim ();
-		if (text.Length == 0)
-			return;
 		// Get the position of the current camera.
 		MessageData message = MessageData.CreateNewMessage (Camera.main.transform, text);
+		// Rotate it towards the other users
+		message.rot.y += 180;
 		string rawJson = JsonUtility.ToJson (message);
 
 
 		// Save to Firebase
 		print ("Sending...");
+		sending = true;
 		messageField.interactable = false;
 		sendButton.interactable = false;
-		messagesRef.Child (message.id).SetRawJsonValueAsync (rawJson).ContinueWith (task => {
-			if (task.IsFaulted) {
-				// Handle the error...
-				Debug.Log ("Couldn't save the message");
-				Debug.Log (task.Exception.Message);
-			} else if (task.IsCompleted) {
-				messageField.text = "";
-			}
+
+		// Send to others
+		foreach (string uid in sendInteractionChecker.uidsInCollisions) {
+			DatabaseReference recipientRef = FirebaseDatabase.DefaultInstance.GetReference ("chats").Child (uid).Child ("m");
+			recipientRef.Child (message.id).SetRawJsonValueAsync (rawJson).ContinueWith (task => {
+				if (task.IsFaulted) {
+					// Handle the error...
+					Debug.Log ("Couldn't save the message");
+					Debug.Log (task.Exception.Message);
+				} else if (task.IsCompleted) {
+					messageField.text = "";
+				}
+				sending = false;
+				messageField.interactable = true;
+				sendButton.interactable = true;
+			});
+		}
+		if (sendInteractionChecker.uidsInCollisions.Count == 0) {
+			messageField.text = "";
+			sending = false;
 			messageField.interactable = true;
 			sendButton.interactable = true;
-		});
-		;
+		}
+			
+		// Display locally on own screen
+		ShowMessage(message);
+	}
+
+
+	void ShowMessage(MessageData message) {
+		Vector3 rotation = message.rot;
+		rotation.x = 0;
+		rotation.z = 0;
+		Canvas canvas = Instantiate (messageUI, message.pos, Quaternion.Euler (rotation));
+		Text text = (Text)canvas.GetComponentsInChildren<Text> ().GetValue (0);
+		text.text = message.text;
 	}
 
 
