@@ -20,7 +20,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/UnityARKitPlugin/Assets/UnityARKitPlugin/Examples/UnityAROcclusion/UnityAROcclusion.unity
     guid: 7f026c59fb9d6489ab924c6e0e119760
-  - enabled: 0
+  - enabled: 1
     path: Assets/UnityARKitPlugin/Assets/UnityARKitPlugin/ARKitRemote/UnityARKitRemote.unity
     guid: 3ed73c0c9d4b76a418a0541c0cefd3ac
   - enabled: 0
@@ -38,6 +38,6 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/UnityARKitPlugin/Assets/UnityARKitPlugin/Examples/FaceTracking/FaceDirectionalLightEstimate.unity
     guid: 360fd35caee4f4e069485021a27c0b06
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/FootprintsARScene.unity
     guid: d5ec2e26c53e149b09d6f430583a6b0e

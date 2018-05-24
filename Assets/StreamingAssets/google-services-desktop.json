@@ -22,7 +22,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:984886558255:ios:a716c76fc986e493", 
         "android_client_info": {
-          "package_name": "com.unity.myan"
+          "package_name": "com.unity.myan.remote"
         }
       }
     }
