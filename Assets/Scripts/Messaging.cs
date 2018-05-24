@@ -75,7 +75,6 @@ public class Messaging : MonoBehaviour
 
 	void Start ()
 	{
-
 		string id = SystemInfo.deviceUniqueIdentifier;
 
 		// Start listening for people 
@@ -104,6 +103,7 @@ public class Messaging : MonoBehaviour
 		MessageData message = MessageData.CreateFromJson (serializer, args.Snapshot.GetRawJsonValue ());
 		Debug.Log ("Got Message " + message.id + " and x = " + message.pos.x);
 		messages.Add (message.id, message);
+		ShowMessage (message);
 //		text.transform.pos
 	}
 
@@ -168,12 +168,14 @@ public class Messaging : MonoBehaviour
 
 		// Save to Firebase
 		print ("Sending...");
+		print ("Position x=" + message.pos.x + " y=" + message.pos.y + " z=" + message.pos.z);
 		sending = true;
 		messageField.interactable = false;
 		sendButton.interactable = false;
-
+		print (sendInteractionChecker.uidsInCollisions);
 		// Send to others
 		foreach (string uid in sendInteractionChecker.uidsInCollisions) {
+			print ("Send to " + uid);
 			DatabaseReference recipientRef = FirebaseDatabase.DefaultInstance.GetReference ("chats").Child (uid).Child ("m");
 			recipientRef.Child (message.id).SetRawJsonValueAsync (rawJson).ContinueWith (task => {
 				if (task.IsFaulted) {
@@ -196,15 +198,20 @@ public class Messaging : MonoBehaviour
 		}
 			
 		// Display locally on own screen
-		ShowMessage(message);
+		ShowMessage (message);
 	}
 
 
-	void ShowMessage(MessageData message) {
+	void ShowMessage (MessageData message)
+	{
+		// Disable other rotations to display it.
 		Vector3 rotation = message.rot;
 		rotation.x = 0;
 		rotation.z = 0;
 		Canvas canvas = Instantiate (messageUI, message.pos, Quaternion.Euler (rotation));
+		// For some reason the canvas isn't correctly positioned when instancing it.
+		canvas.transform.position = message.pos;
+		// Set the message text
 		Text text = (Text)canvas.GetComponentsInChildren<Text> ().GetValue (0);
 		text.text = message.text;
 	}
@@ -226,6 +233,5 @@ public class Messaging : MonoBehaviour
 		messagesRef.ChildChanged -= HandleChildChanged;
 		messagesRef.ChildRemoved -= HandleChildRemoved;
 		*/
-
 	}
 }

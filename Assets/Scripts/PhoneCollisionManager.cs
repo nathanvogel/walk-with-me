@@ -25,6 +25,7 @@ public class PhoneCollisionManager : MonoBehaviour
 
 	void OnTriggerEnter (Collider other)
 	{
+		print ("Collision !");
 		string otherId = other.gameObject.name.Replace ("Phone.", "");
 		uidsInCollisions.Add (otherId);
 	}
@@ -33,8 +34,9 @@ public class PhoneCollisionManager : MonoBehaviour
 	{
 	}
 
-	void OnTriggerLeave (Collider other)
+	void OnTriggerExit (Collider other)
 	{
+		print ("TriggerLeave");
 		string otherId = other.gameObject.name.Replace ("Phone.", "");
 		uidsInCollisions.Remove (otherId);
 	}

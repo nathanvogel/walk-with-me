@@ -71,7 +71,7 @@ public class DatabaseConnection : MonoBehaviour
 	// Controls whether objects are deleted from Firebase when the user
 	// quits the application.
 	private bool deleteWhenLeaving = true;
-	private bool filterRooms = true;
+	private bool filterRooms = false;
 	private float updateInterval = 0.08f;
 
 	// --- Firebase ---
@@ -163,6 +163,9 @@ public class DatabaseConnection : MonoBehaviour
 
 		// Instanciate the Object from the Firebase JSON data and add it to our array.
 		PersonData person = PersonData.CreateFromJson (serializer, args.Snapshot.GetRawJsonValue ());
+		// Don't add self.
+		if (person.id == SystemInfo.deviceUniqueIdentifier)
+			return;
 //		Debug.Log ("CREATE " + person.id);
 		persons.Add (person.id, person);
 	}
@@ -177,8 +180,12 @@ public class DatabaseConnection : MonoBehaviour
 			return;
 		}
 
-		// Get new data
-//		Debug.Log ("UPDATE " + person.id);
+		// Don't add self.
+		PersonData person = PersonData.CreateFromJson (serializer, args.Snapshot.GetRawJsonValue ());
+		if (person.id == SystemInfo.deviceUniqueIdentifier)
+			return;
+
+		// Update inside the object only to not reset some values.
 		persons [args.Snapshot.Key].updateFromJson(serializer, args.Snapshot.GetRawJsonValue ());
 
 	}
