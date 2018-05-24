@@ -36,7 +36,7 @@ public class PhoneCollisionManager : MonoBehaviour
 
 	void OnTriggerExit (Collider other)
 	{
-		print ("TriggerLeave");
+		print ("Collision exit.");
 		string otherId = other.gameObject.name.Replace ("Phone.", "");
 		uidsInCollisions.Remove (otherId);
 	}

@@ -62,6 +62,7 @@ public class Messaging : MonoBehaviour
 
 	// List of messages that we need to show.
 	public Dictionary<string, MessageData> messages = new Dictionary<string, MessageData> ();
+	public Dictionary<string, Canvas> messageVisuals = new Dictionary<string, Canvas> ();
 	public bool sending = false;
 	public PhoneCollisionManager sendInteractionChecker;
 
@@ -129,7 +130,12 @@ public class Messaging : MonoBehaviour
 		}
 
 		//Debug.Log ("REMOVE " + args.Snapshot.Key);
-		messages.Remove (args.Snapshot.Key);
+		string messageId = args.Snapshot.Key;
+		messages.Remove (messageId);
+		if (messageVisuals.ContainsKey (messageId)) {
+			Destroy (messageVisuals [messageId]);
+			messageVisuals.Remove (messageId);
+		}
 	}
 
 
@@ -214,6 +220,12 @@ public class Messaging : MonoBehaviour
 		// Set the message text
 		Text text = (Text)canvas.GetComponentsInChildren<Text> ().GetValue (0);
 		text.text = message.text;
+		// Change the color of our own message.
+		if (message.uid == SystemInfo.deviceUniqueIdentifier) {
+			Image img = (Image)canvas.GetComponentsInChildren<Image> ().GetValue (0);
+			img.color = new Color (0.4f, 0.5f, 1f, 0.5f);
+		}
+		messageVisuals.Add (message.id, canvas);
 	}
 
 

@@ -43,6 +43,7 @@ public class PersonVisual
 		footprintGenerator.transform.rotation = Quaternion.Euler (constrainedRotation);
 
 		// PHONE
+		// Only show the phone if we're close enough
 		if (person.distance < 3f) {
 			phone.GetComponent<Renderer> ().enabled = true;
 			// Move the phone
