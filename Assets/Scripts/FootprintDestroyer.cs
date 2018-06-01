@@ -8,15 +8,25 @@ public class FootprintDestroyer : MonoBehaviour {
     public float destroyTimer;
     public bool destroying = false;
     public float alphaLevelChange=0.05f;
+
+	FindFloor floorFinder;
     
     public GameObject plane;
+
 	void Start () {
-       
+		floorFinder = GameObject.Find ("Manager").GetComponent<FindFloor> ();
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
+//		if (floorFinder.floorHeight != transform.position.y) {
+//			Vector3 pos = transform.position;
+//			pos.y = floorFinder.floorHeight;
+//			transform.position = pos;
+//			print ("Moving footprint");
+//		}
+
 		if (destroying)
 			return;
 		if (transform.position.x!=FootprintsGenerator.leftPos.x&&transform.position.x!=FootprintsGenerator.rightPos.x) {

@@ -178,7 +178,6 @@ public class Messaging : MonoBehaviour
 		sending = true;
 		messageField.interactable = false;
 		sendButton.interactable = false;
-		print (sendInteractionChecker.uidsInCollisions);
 		// Send to others
 		foreach (string uid in sendInteractionChecker.uidsInCollisions) {
 			print ("Send to " + uid);
