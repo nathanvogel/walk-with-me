@@ -14,7 +14,7 @@ public class AppLifecycle : MonoBehaviour
 	public Canvas chatCanvas;
 	public Canvas teleportCanvas;
 	public GameObject experienceManager;
-	public GameObject originAnchor;
+	public Transform originTransform;
 	public DatabaseConnection data;
 
 	InputField nameField;
@@ -44,10 +44,15 @@ public class AppLifecycle : MonoBehaviour
 
 		// Save the name
 		PlayerPrefs.SetString ("displayName", name);
-		// Use the current position for the canvas
-		UnityARSessionNativeInterface.GetARSessionNativeInterface ().SetWorldOrigin (Camera.main.transform);
+		// Use the current user position as a starting point, but suppose the user phone is at the
+		// height that we preset in our build (the phone should be around 0.8m - 1m50 in most cases)
+		originTransform.position = new Vector3 (
+			Camera.main.transform.position.x, 
+			originTransform.position.y, 
+			Camera.main.transform.position.z);
+		UnityARSessionNativeInterface.GetARSessionNativeInterface ().SetWorldOrigin (originTransform);
 		// Move our anchor with it, so that FindFloors work.
-		originAnchor.transform.position = new Vector3 (0, 0, 0);
+//		originTransform.position = new Vector3 (0, 0, 0);
 
 		// Setting the URL is only needed in the editor.
 		#if UNITY_EDITOR

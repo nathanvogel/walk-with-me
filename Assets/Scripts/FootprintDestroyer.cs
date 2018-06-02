@@ -8,8 +8,8 @@ public class FootprintDestroyer : MonoBehaviour
 	public Color c;
 
 	private float alpha = 1f;
-	public float alphaDelta = 0.007f;
-	public float alphaInitialDelta = 0.3f;
+	public float alphaDelta = 0.011f;
+	public float alphaInitialDelta = 0.35f;
 	private bool fading = false;
 
 	void Start ()
