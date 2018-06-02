@@ -8,7 +8,8 @@ public class FootprintDestroyer : MonoBehaviour
 	public Color c;
 
 	private float alpha = 1f;
-	private float alphaLevelChange = 0.02f;
+	public float alphaDelta = 0.007f;
+	public float alphaInitialDelta = 0.3f;
 	private bool fading = false;
 
 	void Start ()
@@ -31,11 +32,14 @@ public class FootprintDestroyer : MonoBehaviour
 		        transform.position.x != FootprintsGenerator.rightPos.x ||
 		        transform.position.y != FootprintsGenerator.rightPos.y)) {
 			fading = true;
+			// Apply an initial delta to give instant feedback on motion
+			// (it gets confusing when the next steps is off the screen.
+			alpha -= alphaInitialDelta;
 		}
 
 		if (fading) {
 			// If we're almost transparent, destroy and quit.
-			if (alpha < (0 + alphaLevelChange)) {
+			if (alpha < (0 + alphaDelta)) {
 				Destroy (gameObject, 0f);
 				return;
 			}
@@ -45,7 +49,7 @@ public class FootprintDestroyer : MonoBehaviour
 			// Become more transparent, at an fps-independant speed (here calibrated on 60 FPS)
 			// deltaTime will be bigger if the frame is longer than usual (less FPS) -> More change.
 			// * 60 so that if the game is running smoothly at 60 FPS, it has no effect (same as * 1) 
-			alpha -= alphaLevelChange * Time.deltaTime * 60;
+			alpha -= alphaDelta * Time.deltaTime * 60;
 		}
 	}
 }

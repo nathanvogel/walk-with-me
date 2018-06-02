@@ -2529,7 +2529,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lastPos: {x: 0, y: 0, z: 0}
   footstepLength: 0.25
-  footstepOffset: 0.15
+  footstepOffset: 0.12
   footstepPrefab: {fileID: 1013931830217348, guid: aa24001e2f63246ca930511dcd4a8de7,
     type: 2}
 --- !u!136 &136714992489170860

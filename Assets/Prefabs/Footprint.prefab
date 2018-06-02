@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4483987353479788}
   - component: {fileID: 212762651385444378}
   m_Layer: 0
-  m_Name: Footprint Sprite
+  m_Name: Footprint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
