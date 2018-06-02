@@ -237,12 +237,10 @@ public class Messaging : MonoBehaviour
 	// Called when the Unity Scene is closed.
 	void OnDestroy ()
 	{
-		/*
-		// This isn't really needed and peopleRef is already null in OnDestroy
-		// (which causes an error) so it probably belong somewhere else, if at all necessary.
-		messagesRef.ChildAdded -= HandleChildAdded;
-		messagesRef.ChildChanged -= HandleChildChanged;
-		messagesRef.ChildRemoved -= HandleChildRemoved;
-		*/
+		if (messagesQuery != null) {
+			messagesQuery.ChildAdded -= HandleChildAdded;
+			messagesQuery.ChildChanged -= HandleChildChanged;
+			messagesQuery.ChildRemoved -= HandleChildRemoved;
+		}
 	}
 }

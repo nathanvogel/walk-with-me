@@ -2527,11 +2527,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2700ed093b2a1f48ba8ce02631b3577, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  footstepPrefab: {fileID: 1761157349647444, guid: 64ce02194c6f6a442a4cb747c62d1717,
-    type: 2}
-  footstepLength: 0.2
-  footstepOffset: 0.15
   lastPos: {x: 0, y: 0, z: 0}
+  footstepLength: 0.25
+  footstepOffset: 0.15
+  footstepPrefab: {fileID: 1013931830217348, guid: aa24001e2f63246ca930511dcd4a8de7,
+    type: 2}
 --- !u!136 &136714992489170860
 CapsuleCollider:
   m_ObjectHideFlags: 1

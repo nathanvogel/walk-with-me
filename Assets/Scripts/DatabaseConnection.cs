@@ -77,7 +77,8 @@ public class DatabaseConnection : MonoBehaviour
 	// --- Firebase ---
 	// A Firebase Reference to the list of person objects.
 	// Null until we start streaming
-	private DatabaseReference peopleRef;
+	private DatabaseReference peopleRef = null;
+	private Query peopleQuery = null;
 	// JSON helper
 	JsonSerializer serializer = new JsonSerializer();
 
@@ -122,18 +123,18 @@ public class DatabaseConnection : MonoBehaviour
 		// Start listening for people 
 		peopleRef = FirebaseDatabase.DefaultInstance.GetReference ("people");
 		// Filter the users to only get the data from the other room.
-		var query = peopleRef.OrderByChild ("locationId");
+		peopleQuery = peopleRef.OrderByChild ("locationId");
 		if (filterRooms) {
 			Debug.Log ("Filter rooms to only: " + otherLocationId);
-			query = query.EqualTo (otherLocationId);
+			peopleQuery = peopleQuery.EqualTo (otherLocationId);
 			// If we later want to show footprints from more than 2 rooms, we could use this technic:
 			// https://stackoverflow.com/questions/39195191/firebase-query-to-exclude-data-based-on-a-condition/39195551#39195551
 			// Or we could structure the data by room: /rooms/<roomId>/people/<personId>
 		}
 		Debug.Log ("Adding listeners");
-		query.ChildAdded += HandleChildAdded;
-		query.ChildChanged += HandleChildChanged;
-		query.ChildRemoved += HandleChildRemoved;
+		peopleQuery.ChildAdded += HandleChildAdded;
+		peopleQuery.ChildChanged += HandleChildChanged;
+		peopleQuery.ChildRemoved += HandleChildRemoved;
 
 		// Get ready to delete the people object if they quit the application,
 		// cutting the connection to Firebase and triggering OnDisconnect().
@@ -236,13 +237,14 @@ public class DatabaseConnection : MonoBehaviour
 	// Called when the Unity Scene is closed.
 	void OnDestroy ()
 	{
-		/*
+		
 		// This isn't really needed and peopleRef is already null in OnDestroy
 		// (which causes an error) so it probably belong somewhere else, if at all necessary.
-		peopleRef.ChildAdded -= HandleChildAdded;
-		peopleRef.ChildChanged -= HandleChildChanged;
-		peopleRef.ChildRemoved -= HandleChildRemoved;
-		*/
+		if (peopleQuery != null) {
+			peopleQuery.ChildAdded -= HandleChildAdded;
+			peopleQuery.ChildChanged -= HandleChildChanged;
+			peopleQuery.ChildRemoved -= HandleChildRemoved;
+		}
 
 		if (deleteWhenLeaving && peopleRef != null) { 
 			// Also remove the people object here to ensure immediate effect.

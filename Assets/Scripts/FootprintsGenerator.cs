@@ -2,74 +2,123 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FootprintsGenerator : MonoBehaviour {
-
-    public GameObject footstepPrefab;
-    public float footstepLength;
-    public float footstepOffset;
-    public static Rigidbody rigitBody;
-    private bool left;
-    // Use this for initialization
-    public Vector3 lastPos;
-    public static Vector3 leftPos;
-    public static Vector3 rightPos;
-    private LinkedList<GameObject> steps;
-    public static bool destroy = false;
+public class FootprintsGenerator : MonoBehaviour
+{
 
 
-    void Start () { 
-        lastPos = gameObject.transform.position;
-        rigitBody = gameObject.GetComponent<Rigidbody>();
-        steps = new LinkedList<GameObject>();
-	}
-  
+	public Vector3 lastPos;
+	public static Vector3 leftPos;
+	public static Vector3 rightPos;
 
-    // Update is called once per frame
-    void Update () {
-       
-        if (!((lastPos.magnitude+footstepLength)>gameObject.transform.position.magnitude)|| !((lastPos.magnitude - footstepLength) < gameObject.transform.position.magnitude)) {
+	public float footstepLength;
+	public float footstepOffset;
 
-            Quaternion rotation = Quaternion.Euler(new Vector3(gameObject.transform.rotation.eulerAngles.x, gameObject.transform.rotation.eulerAngles.y+180, gameObject.transform.rotation.eulerAngles.z));
-            float angle=gameObject.transform.rotation.eulerAngles.y;
-            Vector3 stepPos;
-            //update last pos
-            //TODO: 
-            lastPos = gameObject.transform.position;
-            if (left)
-            {
-                if (angle < 92 && angle > 88 || angle < 272 && angle > 268)
-                {
-                    stepPos = new Vector3(lastPos.x , lastPos.y, lastPos.z + footstepOffset);
-                }
-                else {
-                    stepPos = new Vector3(lastPos.x + footstepOffset, lastPos.y, lastPos.z);
-                }
-                leftPos = stepPos;
+	public GameObject footstepPrefab;
+	//color
+	public static Color stepColor;
+
+	private List<GameObject> pastFootprints = new List<GameObject> ();
 
 
-                left = false;
-            }
-            else {
+	//left/right
+	private bool left;
 
-                if (angle < 92 && angle > 88 || angle < 272 && angle > 268)
-                {
-                    stepPos = new Vector3(lastPos.x, lastPos.y, lastPos.z - footstepOffset);
-                }
-                else
-                {
-                    stepPos = new Vector3(lastPos.x - footstepOffset, lastPos.y, lastPos.z);
-                }
-                left = true;
-                rightPos = stepPos;
-            }
-			steps.AddLast(Instantiate(footstepPrefab, stepPos, rotation));
-        }
+	void Start ()
+	{
+		//get pos
+		lastPos = gameObject.transform.position;
+		//start with black color
+		stepColor = new Color (0, 0, 0, 1f);
+
+		// Spawn initial right step
+		pastFootprints.Add(Instantiate (footstepPrefab, GetStepPosition (), GetStepRotation ()));
+		// Spawn initial left step
+		pastFootprints.Add(Instantiate (footstepPrefab, GetStepPosition (), GetStepRotation ()));
+
+
 	}
 
-	void OnDestroy() {
-		foreach(GameObject step in steps)
-		{
-			Destroy (step);
+
+	void ChangeColor (Color newColor)
+	{
+		// Save the color for future steps
+		stepColor = newColor;
+
+		// Go in the history of footsteps and remove them.
+		foreach (GameObject footprint in pastFootprints) {
+			// Check that the object isn't being destroyed.
+			if (footprint != null) {
+				footprint.gameObject.GetComponent<MeshRenderer> ().material.color = stepColor;
+			}
 		}
+	}
+
+	void Update ()
+	{
+		// Go through the footprints and remove the ones that are destroyed.
+		// Done in two loops to avoid concurrent modification of the array while iterating.
+		List<GameObject> toremove = new List<GameObject> ();
+		foreach (GameObject footprint in pastFootprints) {
+			if (footprint == null) {
+				toremove.Add (footprint);
+			}
+		}
+		foreach (GameObject footprint in toremove) {
+			pastFootprints.Remove(footprint);
+		}
+
+
+
+		// If the foot is now far enough
+		if (!((lastPos.magnitude + footstepLength) > gameObject.transform.position.magnitude) ||
+			!((lastPos.magnitude - footstepLength) < gameObject.transform.position.magnitude)) {
+
+			// Spawn a new step
+			Quaternion rotation = GetStepRotation ();
+			Vector3 stepPos = GetStepPosition ();
+			pastFootprints.Add(Instantiate (footstepPrefab, stepPos, rotation));
+		}
+
+	}
+
+
+	Quaternion GetStepRotation ()
+	{
+		return Quaternion.Euler (new Vector3 (
+			gameObject.transform.rotation.eulerAngles.x + 90, 
+			gameObject.transform.rotation.eulerAngles.y, 
+			gameObject.transform.rotation.eulerAngles.z));
+	}
+
+
+	Vector3 GetStepPosition ()
+	{
+		float angle = gameObject.transform.rotation.eulerAngles.y;
+		Vector3 stepPos;
+
+		// Update last pos
+		lastPos = gameObject.transform.position;
+
+		if (left) {
+			if (angle < 92 && angle > 88 || angle < 272 && angle > 268) {
+				stepPos = new Vector3 (lastPos.x, 0 + .02f, lastPos.z + footstepOffset);
+			} else {
+				stepPos = new Vector3 (lastPos.x + footstepOffset, 0 + .02f, lastPos.z);
+			}
+			leftPos = stepPos;
+
+
+			left = false;
+		} else {
+
+			if (angle < 92 && angle > 88 || angle < 272 && angle > 268) {
+				stepPos = new Vector3 (lastPos.x, 0 + .02f, lastPos.z - footstepOffset);
+			} else {
+				stepPos = new Vector3 (lastPos.x - footstepOffset, 0 + .02f, lastPos.z);
+			}
+			left = true;
+			rightPos = stepPos;
+		}
+		return stepPos;
 	}
 }

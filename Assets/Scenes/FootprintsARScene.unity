@@ -2970,7 +2970,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2114631388}
   - component: {fileID: 2114631386}
-  - component: {fileID: 2114631387}
   m_Layer: 0
   m_Name: AppLifecycle
   m_TagString: Untagged
@@ -2994,17 +2993,6 @@ MonoBehaviour:
   experienceManager: {fileID: 1151489346}
   originAnchor: {fileID: 119517242}
   data: {fileID: 1987340050}
---- !u!114 &2114631387
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2114631385}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2f18c7c448434728987bdae8e6df7d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &2114631388
 Transform:
   m_ObjectHideFlags: 0
