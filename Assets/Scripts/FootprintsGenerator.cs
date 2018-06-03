@@ -31,9 +31,9 @@ public class FootprintsGenerator : MonoBehaviour
 		stepColor = C.DEFAULT_FOOTPRINT_COLOR;
 
 		// Spawn initial right step
-		pastFootprints.Add(Instantiate (footstepPrefab, GetStepPosition (), GetStepRotation ()));
+		pastFootprints.Add (Instantiate (footstepPrefab, GetStepPosition (), GetStepRotation ()));
 		// Spawn initial left step
-		pastFootprints.Add(Instantiate (footstepPrefab, GetStepPosition (), GetStepRotation ()));
+		pastFootprints.Add (Instantiate (footstepPrefab, GetStepPosition (), GetStepRotation ()));
 
 
 	}
@@ -64,21 +64,27 @@ public class FootprintsGenerator : MonoBehaviour
 			}
 		}
 		foreach (GameObject footprint in toremove) {
-			pastFootprints.Remove(footprint);
+			pastFootprints.Remove (footprint);
 		}
-
 
 
 		// If the foot is now far enough
 		if (!((lastPos.magnitude + footstepLength) > gameObject.transform.position.magnitude) ||
-			!((lastPos.magnitude - footstepLength) < gameObject.transform.position.magnitude)) {
+		    !((lastPos.magnitude - footstepLength) < gameObject.transform.position.magnitude)) {
 
 			// Spawn a new step
 			Quaternion rotation = GetStepRotation ();
 			Vector3 stepPos = GetStepPosition ();
-			pastFootprints.Add(Instantiate (footstepPrefab, stepPos, rotation));
+			pastFootprints.Add (Instantiate (footstepPrefab, stepPos, rotation));
 		}
 
+	}
+
+	void OnDestroy ()
+	{
+		foreach (GameObject footprint in pastFootprints) {
+			Destroy (footprint);
+		}
 	}
 
 
