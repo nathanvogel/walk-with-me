@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.iOS;
 
-public class FindFloor : MonoBehaviour
+public class FloorFinder : MonoBehaviour
 {
 
 	// The prefab to debug planes

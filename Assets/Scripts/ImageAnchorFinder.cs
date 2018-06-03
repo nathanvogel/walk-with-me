@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.iOS;
 
-public class FindWorldOrigin : MonoBehaviour {
+public class ImageAnchorFinder : MonoBehaviour {
 
 
 	[SerializeField]
@@ -13,7 +13,7 @@ public class FindWorldOrigin : MonoBehaviour {
 	private ARReferenceImage imageEcal;
 
 	public GameObject prefabToGenerate;
-	public DatabaseConnection data;
+	public DatabasePeople data;
 
 	private GameObject imageAnchorGO;
 	public static float yPos;

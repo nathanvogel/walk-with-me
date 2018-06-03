@@ -15,7 +15,7 @@ public class AppLifecycle : MonoBehaviour
 	public Canvas teleportCanvas;
 	public GameObject experienceManager;
 	public Transform originTransform;
-	public DatabaseConnection data;
+	public DatabasePeople data;
 
 	InputField nameField;
 

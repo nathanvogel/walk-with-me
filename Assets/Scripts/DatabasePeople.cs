@@ -64,7 +64,7 @@ public class PersonData
 }
 
 
-public class DatabaseConnection : MonoBehaviour
+public class DatabasePeople : MonoBehaviour
 {
 	
 	// --- Data behavior settings ---

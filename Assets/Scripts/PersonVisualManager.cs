@@ -62,7 +62,7 @@ public class PersonVisual
 }
 
 
-public class FootprintManager : MonoBehaviour
+public class PersonVisualManager : MonoBehaviour
 {
 	public GameObject footprintsPrefab;
 	public GameObject phonePrefab;
@@ -70,7 +70,7 @@ public class FootprintManager : MonoBehaviour
 	Dictionary<string, PersonVisual> visuals = new Dictionary<string, PersonVisual> ();
 
 
-	public DatabaseConnection data;
+	public DatabasePeople data;
 
 	void Start ()
 	{

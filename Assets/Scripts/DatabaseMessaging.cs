@@ -52,7 +52,7 @@ public class MessageData
 }
 
 
-public class Messaging : MonoBehaviour
+public class DatabaseMessaging : MonoBehaviour
 {
 	// --- Firebase ---
 	private DatabaseReference messagesRef;
