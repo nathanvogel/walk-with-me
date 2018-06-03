@@ -57,6 +57,7 @@ public class DatabaseMessaging : MonoBehaviour
 	// --- Firebase ---
 	private DatabaseReference messagesRef;
 	private Query messagesQuery;
+	private DatabaseReference interactionsRef;
 	// JSON helper
 	JsonSerializer serializer = new JsonSerializer ();
 
@@ -77,6 +78,7 @@ public class DatabaseMessaging : MonoBehaviour
 	void Start ()
 	{
 		string id = SystemInfo.deviceUniqueIdentifier;
+		interactionsRef = FirebaseDatabase.DefaultInstance.GetReference ("interactions");
 
 		// Start listening for people 
 		messagesRef = FirebaseDatabase.DefaultInstance.GetReference ("chats").Child (id).Child ("m");
@@ -194,6 +196,9 @@ public class DatabaseMessaging : MonoBehaviour
 				messageField.interactable = true;
 				sendButton.interactable = true;
 			});
+			// Save that these two users interacted.
+			interactionsRef.Child (id).Child (uid).SetValueAsync (Firebase.Database.ServerValue.Timestamp);
+			interactionsRef.Child (uid).Child (id).SetValueAsync (Firebase.Database.ServerValue.Timestamp);
 		}
 		if (sendInteractionChecker.uidsInCollisions.Count == 0) {
 			messageField.text = "";
@@ -228,9 +233,9 @@ public class DatabaseMessaging : MonoBehaviour
 	}
 
 
-	public void OnClick ()
+	public void OnSendClick ()
 	{
-		SendMessage ();
+//		SendMessage ();
 	}
 
 

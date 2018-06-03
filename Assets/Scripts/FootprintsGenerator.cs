@@ -28,7 +28,7 @@ public class FootprintsGenerator : MonoBehaviour
 		//get pos
 		lastPos = gameObject.transform.position;
 		//start with black color
-		stepColor = new Color (0, 0, 0, 1f);
+		stepColor = C.DEFAULT_FOOTPRINT_COLOR;
 
 		// Spawn initial right step
 		pastFootprints.Add(Instantiate (footstepPrefab, GetStepPosition (), GetStepRotation ()));
@@ -39,14 +39,14 @@ public class FootprintsGenerator : MonoBehaviour
 	}
 
 
-	void ChangeColor (Color newColor)
+	public void ChangeColor (Color newColor)
 	{
 		// Save the color for future steps
 		stepColor = newColor;
 
-		// Go in the history of footsteps and remove them.
+		// Go in the history of footsteps and recolor them.
 		foreach (GameObject footprint in pastFootprints) {
-			// Check that the object isn't being destroyed.
+			// Check that the object isn't destroyed.
 			if (footprint != null) {
 				footprint.gameObject.GetComponent<MeshRenderer> ().material.color = stepColor;
 			}

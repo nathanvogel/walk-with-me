@@ -42,6 +42,14 @@ public class PersonVisual
 		constrainedRotation.z = 0;
 		footprintGenerator.transform.rotation = Quaternion.Euler (constrainedRotation);
 
+		// Color
+		FootprintsGenerator script = footprintGenerator.GetComponent<FootprintsGenerator> ();
+		if (script == null) {
+			Debug.Log ("Couldn't find FootprintsGenerator in GameObject");
+		} else {
+			script.ChangeColor (person.lastInteraction > 0 ? C.APP_COLOR : C.DEFAULT_FOOTPRINT_COLOR);
+		}
+
 		// PHONE
 		// Only show the phone if we're close enough
 		if (person.distance < 3f) {
@@ -95,7 +103,7 @@ public class PersonVisualManager : MonoBehaviour
 		}
 
 		// Check for persons leaving the room.
-		List<string> toRemove = new List<string>();
+		List<string> toRemove = new List<string> ();
 		foreach (KeyValuePair<string,PersonVisual> visual in visuals) {
 			if (!data.persons.ContainsKey (visual.Key)) {
 				toRemove.Add (visual.Key);

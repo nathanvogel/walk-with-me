@@ -20,7 +20,12 @@ public class PersonData
 	[System.NonSerialized]
 	public float distance;
 
-	PersonData() {
+	// Local values imported from other places in the Database
+	[System.NonSerialized]
+	public long lastInteraction = 0;
+
+	PersonData ()
+	{
 		// Parameterless default constructor for Newtonsoft JSON deserializing
 	}
 
@@ -40,7 +45,7 @@ public class PersonData
 
 	public static PersonData CreateFromJson (JsonSerializer serializer, string str)
 	{
-		PersonData p = serializer.Deserialize<PersonData> (new JsonTextReader (new StringReader(str)));
+		PersonData p = serializer.Deserialize<PersonData> (new JsonTextReader (new StringReader (str)));
 		p.computeLocalValues ();
 		return p;
 	}
@@ -78,9 +83,10 @@ public class DatabasePeople : MonoBehaviour
 	// A Firebase Reference to the list of person objects.
 	// Null until we start streaming
 	private DatabaseReference peopleRef = null;
+	private DatabaseReference interactionsRef = null;
 	private Query peopleQuery = null;
 	// JSON helper
-	JsonSerializer serializer = new JsonSerializer();
+	JsonSerializer serializer = new JsonSerializer ();
 
 	// Room IDs
 	public string[] rooms = { "parsons", "ecal" };
@@ -91,6 +97,7 @@ public class DatabasePeople : MonoBehaviour
 
 	// List of people whose footprint we need to show.
 	public Dictionary<string, PersonData> persons = new Dictionary<string, PersonData> ();
+	public Dictionary<string, long> lastInteractions = new Dictionary<string, long> ();
 
 
 	void Start ()
@@ -116,9 +123,14 @@ public class DatabasePeople : MonoBehaviour
 			return;
 		}
 
+		string id = SystemInfo.deviceUniqueIdentifier;
 		deviceLocationId = locationId;
 		otherLocationId = locationId == rooms [0] ? rooms [1] : rooms [0];
 		Debug.Log ("The user is in " + deviceLocationId);
+
+		// Start listening for past/present interactions
+		interactionsRef = FirebaseDatabase.DefaultInstance.GetReference ("interactions");
+		interactionsRef.Child (id).ChildAdded += HandleInteractionAdded;
 
 		// Start listening for people 
 		peopleRef = FirebaseDatabase.DefaultInstance.GetReference ("people");
@@ -132,16 +144,15 @@ public class DatabasePeople : MonoBehaviour
 			// Or we could structure the data by room: /rooms/<roomId>/people/<personId>
 		}
 		Debug.Log ("Adding listeners");
-		peopleQuery.ChildAdded += HandleChildAdded;
-		peopleQuery.ChildChanged += HandleChildChanged;
-		peopleQuery.ChildRemoved += HandleChildRemoved;
+		peopleQuery.ChildAdded += HandlePersonAdded;
+		peopleQuery.ChildChanged += HandlePersonChanged;
+		peopleQuery.ChildRemoved += HandlePersonRemoved;
 
 		// Get ready to delete the people object if they quit the application,
 		// cutting the connection to Firebase and triggering OnDisconnect().
 		// This happens server-side, so it should work even if the app crashes.
 		if (deleteWhenLeaving) {
 			Debug.Log ("Will delete on leave");
-			string id = SystemInfo.deviceUniqueIdentifier;
 			peopleRef.Child (id).OnDisconnect ().RemoveValue ();
 		}
 
@@ -151,10 +162,28 @@ public class DatabasePeople : MonoBehaviour
 
 
 
+	void HandleInteractionAdded (object sender, ChildChangedEventArgs args)
+	{
+		// Check errors
+		if (args.DatabaseError != null) {
+			Debug.LogError (args.DatabaseError.Message);
+			return;
+		}
+
+		string otherUid = args.Snapshot.Key;
+		print ("Interaction ! with " + otherUid);
+		long lastInteraction = (long)args.Snapshot.Value;
+		lastInteractions [otherUid] = lastInteraction;
+		if (persons.ContainsKey (otherUid)) {
+			persons [otherUid].lastInteraction = lastInteraction;
+		}
+	}
+
+
 	// This is function is called:
 	// - when the app opens: for each person present in the room
 	// - when a new person arrives in the room
-	void HandleChildAdded (object sender, ChildChangedEventArgs args)
+	void HandlePersonAdded (object sender, ChildChangedEventArgs args)
 	{
 		// Check errors
 		if (args.DatabaseError != null) {
@@ -167,13 +196,17 @@ public class DatabasePeople : MonoBehaviour
 		// Don't add self.
 		if (person.id == SystemInfo.deviceUniqueIdentifier)
 			return;
-//		Debug.Log ("CREATE " + person.id);
+		// Check last interaction
+		if (lastInteractions.ContainsKey (person.id)) {
+			person.lastInteraction = lastInteractions [person.id];
+		}
+		//		Debug.Log ("CREATE " + person.id);
 		persons.Add (person.id, person);
 	}
 
 	// This function is called when an object (already handled in HandleChildAdded)
 	// changes its data.
-	void HandleChildChanged (object sender, ChildChangedEventArgs args)
+	void HandlePersonChanged (object sender, ChildChangedEventArgs args)
 	{
 		// Check errors
 		if (args.DatabaseError != null) {
@@ -187,12 +220,12 @@ public class DatabasePeople : MonoBehaviour
 			return;
 
 		// Update inside the object only to not reset some values.
-		persons [args.Snapshot.Key].updateFromJson(serializer, args.Snapshot.GetRawJsonValue ());
+		persons [args.Snapshot.Key].updateFromJson (serializer, args.Snapshot.GetRawJsonValue ());
 
 	}
 
 	// When someone leaves the room.
-	void HandleChildRemoved (object sender, ChildChangedEventArgs args)
+	void HandlePersonRemoved (object sender, ChildChangedEventArgs args)
 	{
 		// Check errors
 		if (args.DatabaseError != null) {
@@ -241,9 +274,9 @@ public class DatabasePeople : MonoBehaviour
 		// This isn't really needed and peopleRef is already null in OnDestroy
 		// (which causes an error) so it probably belong somewhere else, if at all necessary.
 		if (peopleQuery != null) {
-			peopleQuery.ChildAdded -= HandleChildAdded;
-			peopleQuery.ChildChanged -= HandleChildChanged;
-			peopleQuery.ChildRemoved -= HandleChildRemoved;
+			peopleQuery.ChildAdded -= HandlePersonAdded;
+			peopleQuery.ChildChanged -= HandlePersonChanged;
+			peopleQuery.ChildRemoved -= HandlePersonRemoved;
 		}
 
 		if (deleteWhenLeaving && peopleRef != null) { 
