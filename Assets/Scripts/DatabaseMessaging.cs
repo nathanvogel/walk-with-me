@@ -74,9 +74,18 @@ public class DatabaseMessaging : MonoBehaviour
 
 	public Canvas messageUI;
 
+	// --- Sound ---
+	AudioSource audioSource;
+	public AudioClip soundOnMessageSent;
+	public AudioClip soundOnMessageReceived;
+	float enabledAt;
+
+
 
 	void Start ()
 	{
+		enabledAt = Time.time;
+		audioSource = GetComponent<AudioSource> ();
 		string id = SystemInfo.deviceUniqueIdentifier;
 		interactionsRef = FirebaseDatabase.DefaultInstance.GetReference ("interactions");
 
@@ -107,7 +116,10 @@ public class DatabaseMessaging : MonoBehaviour
 		Debug.Log ("Got Message " + message.id + " and x = " + message.pos.x);
 		messages.Add (message.id, message);
 		ShowMessage (message);
-//		text.transform.pos
+		// Play sound, but not for the first wave of initial messages.
+		if (enabledAt + 3f < Time.time) {
+			audioSource.PlayOneShot (soundOnMessageReceived, 1f);
+		}
 	}
 
 	void HandleChildChanged (object sender, ChildChangedEventArgs args)
@@ -175,8 +187,7 @@ public class DatabaseMessaging : MonoBehaviour
 
 
 		// Save to Firebase
-		print ("Sending...");
-		print ("Position x=" + message.pos.x + " y=" + message.pos.y + " z=" + message.pos.z);
+		print ("Sending a message...");
 		sending = true;
 		messageField.interactable = false;
 		sendButton.interactable = false;
@@ -192,9 +203,12 @@ public class DatabaseMessaging : MonoBehaviour
 				} else if (task.IsCompleted) {
 					messageField.text = "";
 				}
+				// Unfreeze the UI
 				sending = false;
 				messageField.interactable = true;
 				sendButton.interactable = true;
+				// Play sound.
+				audioSource.PlayOneShot (soundOnMessageSent, 1f);
 			});
 			// Save that these two users interacted.
 			interactionsRef.Child (id).Child (uid).SetValueAsync (Firebase.Database.ServerValue.Timestamp);

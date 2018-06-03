@@ -7,7 +7,7 @@ public class PersonVisual
 {
 	public string id;
 	GameObject footprintGenerator;
-	GameObject phone;
+	public GameObject phone;
 
 	PersonVisual (PersonData p, GameObject go_footprints, GameObject go_phone)
 	{
@@ -62,10 +62,13 @@ public class PersonVisual
 		}
 	}
 
-	public void onDestroy ()
+	public void onDestroy (AudioClip soundLeave)
 	{
 		Object.Destroy (this.footprintGenerator);
-		Object.Destroy (this.phone);
+		// Make the object invisible and play a short sound before destroying it.
+		phone.GetComponent<Renderer> ().enabled = false;
+		phone.GetComponent<AudioSource> ().PlayOneShot (soundLeave);
+		Object.Destroy (this.phone, 1.5f);
 	}
 }
 
@@ -77,11 +80,16 @@ public class PersonVisualManager : MonoBehaviour
 
 	Dictionary<string, PersonVisual> visuals = new Dictionary<string, PersonVisual> ();
 
+	public AudioClip audioOnAppear;
+	public AudioClip audioOnLeave;
+	float enabledAt;
 
 	public DatabasePeople data;
 
+
 	void Start ()
 	{
+		enabledAt = Time.time;
 	}
 
 	// Update is called once per frame
@@ -127,6 +135,10 @@ public class PersonVisualManager : MonoBehaviour
 		GameObject go_footprints = Instantiate (footprintsPrefab, p.pos, Quaternion.Euler (p.rot));
 		GameObject go_phone = Instantiate (phonePrefab, p.pos, Quaternion.Euler (p.rot));
 		PersonVisual visual = PersonVisual.CreatePersonVisual (p, go_footprints, go_phone);
+		// Play sound, but not for the first wave of initial messages.
+		if (enabledAt + 3f < Time.time) {
+			visual.phone.GetComponent<AudioSource> ().PlayOneShot (audioOnAppear);
+		}
 		visuals.Add (p.id, visual);
 	}
 
@@ -134,7 +146,7 @@ public class PersonVisualManager : MonoBehaviour
 	{
 		Debug.Log ("Someone left!");
 
-		visuals [id].onDestroy ();
+		visuals [id].onDestroy (audioOnLeave);
 		visuals.Remove (id);
 	}
 }

@@ -45,6 +45,7 @@ public class FloorFinder : MonoBehaviour
 
 		if (unityARAnchorManager == null) {
 			print ("FloorFinder: Anchor manager is null.");
+			return;
 		}
 		// Get the planes found by ARKit.
 		List<ARPlaneAnchorGameObject> arpags = unityARAnchorManager.GetCurrentPlaneAnchors ();
