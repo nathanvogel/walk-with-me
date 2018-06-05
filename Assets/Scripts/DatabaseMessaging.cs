@@ -49,6 +49,11 @@ public class MessageData
 	{
 		serializer.Populate (new StringReader (str), this);
 	}
+
+	public bool isOwn ()
+	{
+		return this.uid == SystemInfo.deviceUniqueIdentifier;
+	}
 }
 
 
@@ -80,6 +85,12 @@ public class DatabaseMessaging : MonoBehaviour
 	public AudioClip soundOnMessageReceived;
 	float enabledAt;
 
+
+	bool isInSilentPhase ()
+	{
+		// Dirty hack to avoid too many sounds.
+		return enabledAt + 3f > Time.time;
+	}
 
 
 	void Start ()
@@ -117,8 +128,9 @@ public class DatabaseMessaging : MonoBehaviour
 		messages.Add (message.id, message);
 		ShowMessage (message);
 		// Play sound, but not for the first wave of initial messages.
-		if (enabledAt + 3f < Time.time) {
+		if (!isInSilentPhase ()) {
 			audioSource.PlayOneShot (soundOnMessageReceived, 1f);
+			Handheld.Vibrate ();
 		}
 	}
 
@@ -209,6 +221,7 @@ public class DatabaseMessaging : MonoBehaviour
 				sendButton.interactable = true;
 				// Play sound.
 				audioSource.PlayOneShot (soundOnMessageSent, 1f);
+				Handheld.Vibrate ();
 			});
 			// Save that these two users interacted.
 			interactionsRef.Child (id).Child (uid).SetValueAsync (Firebase.Database.ServerValue.Timestamp);
@@ -232,17 +245,39 @@ public class DatabaseMessaging : MonoBehaviour
 		Vector3 rotation = message.rot;
 		rotation.x = 0;
 		rotation.z = 0;
-		Canvas canvas = Instantiate (messageUI, message.pos, Quaternion.Euler (rotation));
-		// For some reason the canvas isn't correctly positioned when instancing it.
-		canvas.transform.position = message.pos;
+		Canvas canvas = Instantiate (messageUI);
+		if (message.isOwn () || isInSilentPhase ()) {
+			// Directly position the user's own messages. Also populate initial data without animations.
+			canvas.gameObject.transform.position = message.pos;
+			canvas.gameObject.transform.rotation = Quaternion.Euler (rotation);
+		} else {
+			// Animate incoming new messages
+			canvas.gameObject.transform.position = Camera.main.transform.position + Camera.main.transform.forward * 0.2f;
+			canvas.gameObject.transform.rotation = Camera.main.transform.rotation;
+			iTween.MoveTo (canvas.gameObject, iTween.Hash (
+				"position", message.pos, 
+				"time", 1.2f, 
+				"delay", 0f
+			));
+			iTween.RotateTo (canvas.gameObject, iTween.Hash (
+				"rotation", rotation, 
+				"time", 1.2f, 
+				"delay", 0f
+			));
+		}
 		// Set the message text
 		Text text = (Text)canvas.GetComponentsInChildren<Text> ().GetValue (0);
 		text.text = message.text;
 		// Change the color of our own message.
+//		if (message.uid == SystemInfo.deviceUniqueIdentifier) {
+//			Image img = (Image)canvas.GetComponentsInChildren<Image> ().GetValue (0);
+//			img.color = new Color (0.4f, 0.5f, 1f, 0.5f);
+//		}
 		if (message.uid == SystemInfo.deviceUniqueIdentifier) {
-			Image img = (Image)canvas.GetComponentsInChildren<Image> ().GetValue (0);
-			img.color = new Color (0.4f, 0.5f, 1f, 0.5f);
+			Text txt = (Text)canvas.GetComponentInChildren<Text> ();
+			txt.color = C.APP_COLOR_LIGHT;
 		}
+
 		messageVisuals.Add (message.id, canvas);
 	}
 

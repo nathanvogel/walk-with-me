@@ -22,6 +22,9 @@ public class AppLifecycle : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
+		// Initilization
+		iTween.Defaults.easeType = iTween.EaseType.easeInOutQuad;
+
 		teleportCanvas.gameObject.SetActive (true);
 		chatCanvas.gameObject.SetActive (false);
 		experienceManager.SetActive (false);

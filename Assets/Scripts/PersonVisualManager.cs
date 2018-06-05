@@ -47,13 +47,13 @@ public class PersonVisual
 		if (script == null) {
 			Debug.Log ("Couldn't find FootprintsGenerator in GameObject");
 		} else {
-			script.ChangeColor (person.lastInteraction > 0 ? C.APP_COLOR : C.DEFAULT_FOOTPRINT_COLOR);
+			script.ChangeColor (person.lastInteraction > 0 ? C.APP_COLOR_DARK : C.DEFAULT_FOOTPRINT_COLOR);
 		}
 
 		// PHONE
 		// Only show the phone if we're close enough
 		if (person.distance < 3f) {
-			phone.GetComponent<Renderer> ().enabled = true;
+			phone.GetComponentInChildren <Renderer> ().enabled = true;
 			// Move the phone
 			phone.transform.position = person.pos;
 			phone.transform.rotation = Quaternion.Euler (person.rot);
@@ -66,7 +66,7 @@ public class PersonVisual
 	{
 		Object.Destroy (this.footprintGenerator);
 		// Make the object invisible and play a short sound before destroying it.
-		phone.GetComponent<Renderer> ().enabled = false;
+		phone.GetComponentInChildren<Renderer> ().enabled = false;
 		phone.GetComponent<AudioSource> ().PlayOneShot (soundLeave);
 		Object.Destroy (this.phone, 1.5f);
 	}
