@@ -108,6 +108,8 @@ public class DatabaseMessaging : MonoBehaviour
 		messagesQuery.ChildAdded += HandleChildAdded;
 		messagesQuery.ChildChanged += HandleChildChanged;
 		messagesQuery.ChildRemoved += HandleChildRemoved;
+
+		FirebaseDatabase.DefaultInstance.GetReference ("chats").Child (id).Child ("m").OnDisconnect ().RemoveValue ();
 	}
 		
 
