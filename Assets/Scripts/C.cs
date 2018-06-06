@@ -3,7 +3,7 @@
 public class C  
 {
 	public static Color DEFAULT_FOOTPRINT_COLOR = new Color(0, 0, 0);
-	public static Color APP_COLOR = new Color(47f/255, 36f/255, 173f/255);
-	public static Color APP_COLOR_LIGHT = new Color(127f/255, 120f/255, 206f/255);
-	public static Color APP_COLOR_DARK = new Color(128f/255, 120f/255, 219f/255);
+	public static Color APP_COLOR = new Color(48f/255, 79f/255, 254f/255);
+	public static Color APP_COLOR_LIGHT = new Color(197f/255, 202f/255, 233f/255);
+	public static Color APP_COLOR_DARK = new Color(26f/255, 35f/255, 126f/255);
 }
