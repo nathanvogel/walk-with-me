@@ -53,12 +53,12 @@ public class PersonVisual
 		// PHONE
 		// Only show the phone if we're close enough
 		if (person.distance < 3f) {
-			phone.GetComponentInChildren <Renderer> ().enabled = true;
+			phone.GetComponentInChildren<Renderer> ().enabled = true;
 			// Move the phone
 			phone.transform.position = person.pos;
 			phone.transform.rotation = Quaternion.Euler (person.rot);
 		} else {
-			phone.GetComponent<Renderer> ().enabled = false;
+			phone.GetComponentInChildren<Renderer> ().enabled = false;
 		}
 	}
 

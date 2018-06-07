@@ -254,16 +254,16 @@ public class DatabaseMessaging : MonoBehaviour
 			canvas.gameObject.transform.rotation = Quaternion.Euler (rotation);
 		} else {
 			// Animate incoming new messages
-			canvas.gameObject.transform.position = Camera.main.transform.position + Camera.main.transform.forward * 0.2f;
+			canvas.gameObject.transform.position = Camera.main.transform.position + Camera.main.transform.forward * 0.28f;
 			canvas.gameObject.transform.rotation = Camera.main.transform.rotation;
 			iTween.MoveTo (canvas.gameObject, iTween.Hash (
 				"position", message.pos, 
-				"time", 1.2f, 
+				"time", 1.5f, 
 				"delay", 0f
 			));
 			iTween.RotateTo (canvas.gameObject, iTween.Hash (
 				"rotation", rotation, 
-				"time", 1.2f, 
+				"time", 1.5f, 
 				"delay", 0f
 			));
 		}

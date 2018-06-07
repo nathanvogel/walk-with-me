@@ -17,8 +17,6 @@ public class AppLifecycle : MonoBehaviour
 	public Transform originTransform;
 	public DatabasePeople data;
 
-	InputField nameField;
-
 	// Use this for initialization
 	void Start ()
 	{
@@ -29,24 +27,10 @@ public class AppLifecycle : MonoBehaviour
 		chatCanvas.gameObject.SetActive (false);
 		experienceManager.SetActive (false);
 
-		nameField = teleportCanvas.GetComponentInChildren<InputField> ();
-
-		if (PlayerPrefs.HasKey ("displayName")) {
-			nameField.text = PlayerPrefs.GetString ("displayName");
-		} else {
-			nameField.text = PlayerPrefs.GetString ("");
-		}
 	}
 
 	public void OnTeleportClick ()
 	{
-		// Check that the user wrote a name
-		string name = nameField.text.Trim ();
-		if (name.Length < 3)
-			return;
-
-		// Save the name
-		PlayerPrefs.SetString ("displayName", name);
 		// Use the current user position as a starting point, but suppose the user phone is at the
 		// height that we preset in our build (the phone should be around 0.8m - 1m50 in most cases)
 		originTransform.position = new Vector3 (
