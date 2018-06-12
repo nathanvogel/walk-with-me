@@ -13,6 +13,13 @@ public class AppLifecycle : MonoBehaviour
 
 	public Canvas chatCanvas;
 	public Canvas teleportCanvas;
+
+	public Canvas tutorialCanvas;
+	public Canvas welcomeCanvas;
+	public Canvas discoverCanvas;
+	public Canvas interactCanvas;
+	public Canvas goCanvas;
+
 	public GameObject experienceManager;
 	public Transform originTransform;
 	public DatabasePeople data;
@@ -23,10 +30,29 @@ public class AppLifecycle : MonoBehaviour
 		// Initilization
 		iTween.Defaults.easeType = iTween.EaseType.easeInOutQuad;
 
-		teleportCanvas.gameObject.SetActive (true);
+		teleportCanvas.gameObject.SetActive (false);
 		chatCanvas.gameObject.SetActive (false);
+
+		tutorialCanvas.gameObject.SetActive (true);
+		welcomeCanvas.gameObject.SetActive (true);
+		discoverCanvas.gameObject.SetActive (false);
+		interactCanvas.gameObject.SetActive (false);
+		goCanvas.gameObject.SetActive (false);
+
 		experienceManager.SetActive (false);
 
+	}
+
+	public void OnTutorialClick ()
+	{	
+		// Clicking on "get started"
+		// Here I want to simply move the UI elements by chaning the x position, but it doesn't seem to work
+		foreach (var item in welcomeCanvas.GetComponents<Component>()) {
+			var pos = item.transform.position;
+			iTween.MoveTo (item.gameObject, new Vector3 (pos.x - 100, pos.y, pos.z), 1.0f);
+		}
+
+		discoverCanvas.gameObject.SetActive (true);
 	}
 
 	public void OnTeleportClick ()
@@ -56,6 +82,9 @@ public class AppLifecycle : MonoBehaviour
 		// Enable the experience.
 		teleportCanvas.gameObject.SetActive (false);
 		chatCanvas.gameObject.SetActive (true);
+
+		tutorialCanvas.gameObject.SetActive (false);
+
 		experienceManager.SetActive (true);
 		data.SetLocation ("ecal");
 	}
