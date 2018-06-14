@@ -28,16 +28,16 @@ public class AppLifecycle : MonoBehaviour
 		// Initilization
 		iTween.Defaults.easeType = iTween.EaseType.easeInOutQuad;
 
-		// Position the tutorial
-		int canvasIndex = PlayerPrefs.HasKey (C.PREF_HAS_JOINED_ONCE) ? 3 : 0;
-		tutorialContainer.transform.localPosition = GetPositionForTutorialStep (canvasIndex);
-
 		// Disable interactions and enable the tutorial
 		chatCanvas.gameObject.SetActive (false);
 		tutorialCanvas.gameObject.SetActive (true);
 
-		experienceManager.SetActive (false);
+		// Position the tutorial
+		// Warning: Do it after its activation, otherwise the calculation is wrong for some reason.
+		int canvasIndex = PlayerPrefs.HasKey (C.PREF_HAS_JOINED_ONCE) ? 3 : 0;
+		tutorialContainer.transform.localPosition = GetPositionForTutorialStep (canvasIndex);
 
+		experienceManager.SetActive (false);
 	}
 
 	public void OnGoToTutorialStepClick (int step)
@@ -86,13 +86,11 @@ public class AppLifecycle : MonoBehaviour
 		FirebaseApp.DefaultInstance.SetEditorDatabaseUrl ("https://newp-f426c.firebaseio.com/");
 		#endif
 
-
 		// Enable the experience.
 		chatCanvas.gameObject.SetActive (true);
 		tutorialCanvas.gameObject.SetActive (false);
 		experienceManager.SetActive (true);
 		data.SetLocation ("ecal");
-
 
 		// Save that the user started once
 		PlayerPrefs.SetInt(C.PREF_HAS_JOINED_ONCE, 1);
