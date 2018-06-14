@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.iOS;
+using UnityEngine.EventSystems;
 using Firebase;
 using Firebase.Unity.Editor;
 using Firebase.Database;
@@ -12,13 +13,10 @@ public class AppLifecycle : MonoBehaviour
 
 
 	public Canvas chatCanvas;
-	public Canvas teleportCanvas;
 
+	public GameObject tutorialContainer;
 	public Canvas tutorialCanvas;
-	public Canvas welcomeCanvas;
-	public Canvas discoverCanvas;
-	public Canvas interactCanvas;
-	public Canvas goCanvas;
+	public int numberOfCanvas = 4;
 
 	public GameObject experienceManager;
 	public Transform originTransform;
@@ -30,32 +28,37 @@ public class AppLifecycle : MonoBehaviour
 		// Initilization
 		iTween.Defaults.easeType = iTween.EaseType.easeInOutQuad;
 
-		teleportCanvas.gameObject.SetActive (false);
+		// Disable interactions and enable the tutorial
 		chatCanvas.gameObject.SetActive (false);
-
 		tutorialCanvas.gameObject.SetActive (true);
-		welcomeCanvas.gameObject.SetActive (true);
-		discoverCanvas.gameObject.SetActive (false);
-		interactCanvas.gameObject.SetActive (false);
-		goCanvas.gameObject.SetActive (false);
 
 		experienceManager.SetActive (false);
 
 	}
 
-	public void OnTutorialClick ()
-	{	
-		// Clicking on "get started"
-		// Here I want to simply move the UI elements by chaning the x position, but it doesn't seem to work
-		foreach (var item in welcomeCanvas.GetComponents<Component>()) {
-			var pos = item.transform.position;
-			iTween.MoveTo (item.gameObject, new Vector3 (pos.x - 100, pos.y, pos.z), 1.0f);
-		}
-
-		discoverCanvas.gameObject.SetActive (true);
+	public void OnGoToTutorialStepClick (int step)
+	{
+		// Animate between canvas. The id (number/index) of the canvas is specified
+		// by the button click.
+		iTween.MoveTo (tutorialContainer, iTween.Hash (
+			"position", GetPositionForTutorialStep (step), 
+			"time", 0.300f,
+			"islocal", true,
+			"delay", 0f,
+			"easetype", "easeOutSine"
+		));
 	}
 
-	public void OnTeleportClick ()
+	Vector3 GetPositionForTutorialStep (int step)
+	{
+		Rect rect = tutorialCanvas.GetComponent<RectTransform> ().rect;
+		// Offset for the initial position
+		float offset = (float)(numberOfCanvas - 1) / 2;
+		Vector3 newPos = new Vector3 (rect.width * offset + rect.width * -1 * step, 0);
+		return newPos;
+	}
+
+	public void OnJoinClick ()
 	{
 		// Use the current user position as a starting point, but suppose the user phone is at the
 		// height that we preset in our build (the phone should be around 0.8m - 1m50 in most cases)
@@ -80,11 +83,8 @@ public class AppLifecycle : MonoBehaviour
 		#endif
 
 		// Enable the experience.
-		teleportCanvas.gameObject.SetActive (false);
 		chatCanvas.gameObject.SetActive (true);
-
 		tutorialCanvas.gameObject.SetActive (false);
-
 		experienceManager.SetActive (true);
 		data.SetLocation ("ecal");
 	}
@@ -92,6 +92,5 @@ public class AppLifecycle : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		
 	}
 }
