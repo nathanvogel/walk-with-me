@@ -272,13 +272,6 @@ public class DatabaseMessaging : MonoBehaviour
 	}
 
 
-	public void OnSendClick ()
-	{
-//		SendMessage ();
-		print("click");
-	}
-
-
 	// Called when the Unity Scene is closed.
 	void OnDestroy ()
 	{

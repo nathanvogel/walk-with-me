@@ -52,7 +52,6 @@ public class SendInteraction : MonoBehaviour
 		    isSendPressed &&
 		    !messaging.sending) {
 			messaging.SendMessage ();
-			hasJustSent = true;
 		}
 
 		UpdateSendTooltipAlpha ();
