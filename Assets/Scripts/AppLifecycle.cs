@@ -95,6 +95,12 @@ public class AppLifecycle : MonoBehaviour
 		// Save that the user started once
 		PlayerPrefs.SetInt(C.PREF_HAS_JOINED_ONCE, 1);
 	}
+
+	public void OnHelpClick() {
+		chatCanvas.gameObject.SetActive (false);
+		tutorialCanvas.gameObject.SetActive (true);
+		tutorialContainer.transform.localPosition = GetPositionForTutorialStep (0);
+	}
 	
 	// Update is called once per frame
 	void Update ()

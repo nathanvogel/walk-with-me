@@ -167,19 +167,7 @@ public class DatabaseMessaging : MonoBehaviour
 	}
 
 
-	void Update ()
-	{
-		if (sendInteractionChecker.shouldSend ()) {
-			// SendMessage() takes care of checking if basic conditions
-			// for sending messages are met, so we can call that on 
-			// every frame.
-			// Case not well handled : errors when sending while cause retry everytime
-			SendMessage ();
-		}
-	}
-
-
-	void SendMessage ()
+	public void SendMessage ()
 	{
 		// Check that we aren't already sending.
 		if (sending)
@@ -212,18 +200,18 @@ public class DatabaseMessaging : MonoBehaviour
 			recipientRef.Child (message.id).SetRawJsonValueAsync (rawJson).ContinueWith (task => {
 				if (task.IsFaulted) {
 					// Handle the error...
-					Debug.Log ("Couldn't save the message");
+					Debug.Log ("Couldn't save the message to Firebase.");
 					Debug.Log (task.Exception.Message);
 				} else if (task.IsCompleted) {
 					messageField.text = "";
+					// Play sound.
+					audioSource.PlayOneShot (soundOnMessageSent, 1f);
+					Handheld.Vibrate ();
 				}
 				// Unfreeze the UI
 				sending = false;
 				messageField.interactable = true;
 				sendButton.interactable = true;
-				// Play sound.
-				audioSource.PlayOneShot (soundOnMessageSent, 1f);
-				Handheld.Vibrate ();
 			});
 			// Save that these two users interacted.
 			interactionsRef.Child (id).Child (uid).SetValueAsync (Firebase.Database.ServerValue.Timestamp);
@@ -254,7 +242,7 @@ public class DatabaseMessaging : MonoBehaviour
 			canvas.gameObject.transform.rotation = Quaternion.Euler (rotation);
 		} else {
 			// Animate incoming new messages
-			canvas.gameObject.transform.position = Camera.main.transform.position + Camera.main.transform.forward * 0.28f;
+			canvas.gameObject.transform.position = Camera.main.transform.position - new Vector3(0f, 0.30f) + Camera.main.transform.forward * 0.9f;
 			canvas.gameObject.transform.rotation = Camera.main.transform.rotation;
 			iTween.MoveTo (canvas.gameObject, iTween.Hash (
 				"position", message.pos, 
@@ -287,6 +275,7 @@ public class DatabaseMessaging : MonoBehaviour
 	public void OnSendClick ()
 	{
 //		SendMessage ();
+		print("click");
 	}
 
 

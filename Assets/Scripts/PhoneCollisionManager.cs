@@ -5,22 +5,11 @@ using UnityEngine;
 public class PhoneCollisionManager : MonoBehaviour
 {
 	
-	private bool isSendPressed = false;
 	public List<string> uidsInCollisions = new List<string>();
 
 
-	public bool shouldSend() {
-		return isSendPressed && uidsInCollisions.Count > 0;
-	}
-
-	public void onPointerDownSendButton ()
-	{
-		isSendPressed = true;
-	}
-
-	public void onPointerUpSendButton ()
-	{
-		isSendPressed = false;
+	public bool isInCollision() {
+		return uidsInCollisions.Count > 0;
 	}
 
 	void OnTriggerEnter (Collider other)
