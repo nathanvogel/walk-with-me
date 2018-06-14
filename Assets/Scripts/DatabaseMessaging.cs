@@ -235,6 +235,8 @@ public class DatabaseMessaging : MonoBehaviour
 		Vector3 rotation = message.rot;
 		rotation.x = 0;
 		rotation.z = 0;
+		Vector3 position = message.pos;
+		//message.pos -= 
 		Canvas canvas = Instantiate (messageUI);
 		if (message.isOwn () || isInSilentPhase ()) {
 			// Directly position the user's own messages. Also populate initial data without animations.
@@ -253,6 +255,13 @@ public class DatabaseMessaging : MonoBehaviour
 				"rotation", rotation, 
 				"time", 1.5f, 
 				"delay", 0f
+			));
+
+			iTween.ScaleTo(canvas.gameObject, iTween.Hash (
+				"scale", new Vector3(10f*0.0003f, 10f*0.0003f, 10f*0.0003f), 
+				"time", 15f, 
+				"islocal", true,
+				"delay", 5f
 			));
 		}
 		// Set the message text
