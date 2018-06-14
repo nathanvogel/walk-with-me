@@ -244,10 +244,10 @@ public class DatabaseMessaging : MonoBehaviour
 			// Directly set the rotation
 			canvas.gameObject.transform.rotation = Quaternion.Euler (rotation);
 			// Animate outcoming messages
-			canvas.gameObject.transform.position = Camera.main.transform.position - new Vector3(0f, 0.20f) + Camera.main.transform.forward * 0.9f;
+			canvas.gameObject.transform.position = Camera.main.transform.position - new Vector3(0f, 0.10f) + Camera.main.transform.forward * 0.9f;
 			iTween.MoveTo (canvas.gameObject, iTween.Hash (
 				"position", message.pos, 
-				"time", 0.3f, 
+				"time", 0.6f, 
 				"delay", 0f,
 				"easetype", "easeOutSine"
 			));
