@@ -236,13 +236,24 @@ public class DatabaseMessaging : MonoBehaviour
 		rotation.x = 0;
 		rotation.z = 0;
 		Canvas canvas = Instantiate (messageUI);
-		if (message.isOwn () || isInSilentPhase ()) {
+		if (isInSilentPhase ()) {
 			// Directly position the user's own messages. Also populate initial data without animations.
 			canvas.gameObject.transform.position = message.pos;
 			canvas.gameObject.transform.rotation = Quaternion.Euler (rotation);
+		} else if (message.isOwn ()) {
+			// Directly set the rotation
+			canvas.gameObject.transform.rotation = Quaternion.Euler (rotation);
+			// Animate outcoming messages
+			canvas.gameObject.transform.position = Camera.main.transform.position - new Vector3(0f, 0.20f) + Camera.main.transform.forward * 0.9f;
+			iTween.MoveTo (canvas.gameObject, iTween.Hash (
+				"position", message.pos, 
+				"time", 0.3f, 
+				"delay", 0f,
+				"easetype", "easeOutSine"
+			));
 		} else {
 			// Animate incoming new messages
-			canvas.gameObject.transform.position = Camera.main.transform.position - new Vector3(0f, 0.30f) + Camera.main.transform.forward * 0.9f;
+			canvas.gameObject.transform.position = Camera.main.transform.position - new Vector3(0f, 0.00f) + Camera.main.transform.forward * 0.9f;
 			canvas.gameObject.transform.rotation = Camera.main.transform.rotation;
 			iTween.MoveTo (canvas.gameObject, iTween.Hash (
 				"position", message.pos, 
