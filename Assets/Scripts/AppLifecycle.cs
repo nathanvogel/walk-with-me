@@ -28,6 +28,10 @@ public class AppLifecycle : MonoBehaviour
 		// Initilization
 		iTween.Defaults.easeType = iTween.EaseType.easeInOutQuad;
 
+		// Position the tutorial
+		int canvasIndex = PlayerPrefs.HasKey (C.PREF_HAS_JOINED_ONCE) ? 3 : 0;
+		tutorialContainer.transform.localPosition = GetPositionForTutorialStep (canvasIndex);
+
 		// Disable interactions and enable the tutorial
 		chatCanvas.gameObject.SetActive (false);
 		tutorialCanvas.gameObject.SetActive (true);
@@ -52,7 +56,7 @@ public class AppLifecycle : MonoBehaviour
 	Vector3 GetPositionForTutorialStep (int step)
 	{
 		Rect rect = tutorialCanvas.GetComponent<RectTransform> ().rect;
-		// Offset for the initial position
+		// Offset for the initial position, because the transform is at the center of all canvas.
 		float offset = (float)(numberOfCanvas - 1) / 2;
 		Vector3 newPos = new Vector3 (rect.width * offset + rect.width * -1 * step, 0);
 		return newPos;
@@ -82,11 +86,16 @@ public class AppLifecycle : MonoBehaviour
 		FirebaseApp.DefaultInstance.SetEditorDatabaseUrl ("https://newp-f426c.firebaseio.com/");
 		#endif
 
+
 		// Enable the experience.
 		chatCanvas.gameObject.SetActive (true);
 		tutorialCanvas.gameObject.SetActive (false);
 		experienceManager.SetActive (true);
 		data.SetLocation ("ecal");
+
+
+		// Save that the user started once
+		PlayerPrefs.SetInt(C.PREF_HAS_JOINED_ONCE, 1);
 	}
 	
 	// Update is called once per frame
