@@ -8,6 +8,7 @@ public class PersonVisual
 	public string id;
 	GameObject footprintGenerator;
 	public GameObject phone;
+	private Vector3 velocity = Vector3.zero;
 
 	PersonVisual (PersonData p, GameObject go_footprints, GameObject go_phone)
 	{
@@ -52,10 +53,12 @@ public class PersonVisual
 
 		// PHONE
 		// Only show the phone if we're close enough
-		if (person.distance < 3f) {
+		if (person.distance < 2.5f) {
 			phone.GetComponentInChildren<Renderer> ().enabled = true;
 			// Move the phone
-			phone.transform.position = person.pos;
+			//			phone.transform.position = person.pos;
+			// and smooth the motion.
+			phone.transform.position = Vector3.SmoothDamp(phone.transform.position, person.pos, ref velocity, 0.1f);
 			phone.transform.rotation = Quaternion.Euler (person.rot);
 		} else {
 			phone.GetComponentInChildren<Renderer> ().enabled = false;
