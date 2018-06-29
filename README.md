@@ -11,4 +11,5 @@ Requirements:
 
 * Xcode 9.3
 * iOS 11.3
+* Unity 2017.3.1f1
 
