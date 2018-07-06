@@ -9,6 +9,7 @@ public class PersonVisual
 	GameObject footprintGenerator;
 	public GameObject phone;
 	private Vector3 velocity = Vector3.zero;
+	private bool lastVisible = false;
 
 	PersonVisual (PersonData p, GameObject go_footprints, GameObject go_phone)
 	{
@@ -54,14 +55,28 @@ public class PersonVisual
 		// PHONE
 		// Only show the phone if we're close enough
 		if (person.distance < 2.5f) {
-			phone.GetComponentInChildren<Renderer> ().enabled = true;
-			// Move the phone
-			//			phone.transform.position = person.pos;
-			// and smooth the motion.
-			phone.transform.position = Vector3.SmoothDamp(phone.transform.position, person.pos, ref velocity, 0.1f);
+			if (lastVisible) {
+				// Smooth the motion.
+				phone.transform.position = Vector3.SmoothDamp (phone.transform.position, person.pos, ref velocity, 0.1f);
+			} else {
+				// Move the phone directly upon making it visible
+				enableRenderers (true);
+				phone.transform.position = person.pos;
+			}
 			phone.transform.rotation = Quaternion.Euler (person.rot);
+			lastVisible = true;
 		} else {
-			phone.GetComponentInChildren<Renderer> ().enabled = false;
+			if (lastVisible) {
+				enableRenderers (false);
+			}
+			lastVisible = false;
+		}
+	}
+
+	public void enableRenderers(bool enabled) {
+		Renderer[] renderers = phone.GetComponentsInChildren<Renderer> ();
+		foreach (Renderer r in renderers) {
+			r.enabled = enabled;
 		}
 	}
 
